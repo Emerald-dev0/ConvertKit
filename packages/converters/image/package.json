@@ -1,0 +1,37 @@
+{
+  "name": "@convertkit/converter-image",
+  "version": "0.1.0",
+  "description": "Image converter adapter for ConvertKit using Sharp",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "sharp": "^0.33.5"
+  },
+  "peerDependencies": {
+    "@convertkit/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@convertkit/core": "workspace:*"
+  },
+  "keywords": [
+    "convertkit",
+    "converter",
+    "image",
+    "sharp",
+    "png",
+    "jpg",
+    "webp"
+  ],
+  "author": "ConvertKit Contributors",
+  "license": "MIT"
+}

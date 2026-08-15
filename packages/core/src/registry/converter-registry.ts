@@ -1,4 +1,4 @@
-import { ConversionCapability, ConversionFidelity } from "../domain/capability.js";
+import { ConversionFidelity } from "../domain/capability.js";
 import { Converter } from "../domain/converter.js";
 import { FileFormat } from "../domain/format.js";
 

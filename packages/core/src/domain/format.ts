@@ -89,7 +89,7 @@ export function findFormatByExtension(
     : `.${ext.toLowerCase()}`;
 
   return Object.values(FORMATS).find((f) =>
-    f.extensions.includes(normalizedExt)
+    (f.extensions as readonly string[]).includes(normalizedExt)
   );
 }
 
@@ -99,6 +99,6 @@ export function findFormatByExtension(
 export function findFormatByMimeType(mime: string): FileFormat | undefined {
   const normalizedMime = mime.toLowerCase();
   return Object.values(FORMATS).find((f) =>
-    f.mimeTypes.includes(normalizedMime)
+    (f.mimeTypes as readonly string[]).includes(normalizedMime)
   );
 }
