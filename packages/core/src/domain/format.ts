@@ -75,10 +75,19 @@ export const FORMATS = {
 } as const satisfies Record<string, FileFormat>;
 
 /**
- * Utility to find a format by its extension.
+ * Utility to find a format by its extension or filename.
  */
-export function findFormatByExtension(ext: string): FileFormat | undefined {
-  const normalizedExt = ext.startsWith(".") ? ext.toLowerCase() : `.${ext.toLowerCase()}`;
+export function findFormatByExtension(
+  extOrFilename: string
+): FileFormat | undefined {
+  const lastDotIndex = extOrFilename.lastIndexOf(".");
+  const ext =
+    lastDotIndex === -1 ? extOrFilename : extOrFilename.slice(lastDotIndex);
+
+  const normalizedExt = ext.startsWith(".")
+    ? ext.toLowerCase()
+    : `.${ext.toLowerCase()}`;
+
   return Object.values(FORMATS).find((f) =>
     f.extensions.includes(normalizedExt)
   );

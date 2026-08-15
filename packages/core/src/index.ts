@@ -11,3 +11,7 @@ export * from "./domain/converter.js";
 
 // Registry
 export * from "./registry/converter-registry.js";
+
+// Detection
+export * from "./detection/detector.js";
+export * from "./detection/signatures.js";
