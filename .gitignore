@@ -1,0 +1,39 @@
+# Dependencies
+node_modules
+.pnpm-debug.log*
+
+# Build artifacts
+dist
+out
+build
+*.tsbuildinfo
+
+# IDEs and Editors
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+coverage
+.vitest-result
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+tmp
+temp

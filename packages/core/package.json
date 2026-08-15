@@ -1,0 +1,24 @@
+{
+  "name": "@convertkit/core",
+  "version": "0.1.0",
+  "description": "Core conversion engine for ConvertKit",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "convert",
+    "file",
+    "infrastructure",
+    "toolkit"
+  ],
+  "author": "ConvertKit Contributors",
+  "license": "MIT"
+}
