@@ -7,11 +7,13 @@ import {
 } from "@convertkit/core";
 import { ImageConverter } from "@convertkit/converter-image";
 import { PdfTextConverter } from "@convertkit/converter-pdf-text";
+import { CsvJsonConverter } from "@convertkit/converter-csv-json";
 
 const detector = new FormatDetector();
 const registry = new ConverterRegistry();
 registry.register(new ImageConverter());
 registry.register(new PdfTextConverter());
+registry.register(new CsvJsonConverter());
 
 export type ConversionState = {
   success?: boolean;

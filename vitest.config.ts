@@ -9,6 +9,7 @@ export default defineConfig({
       "@convertkit/core": path.resolve(__dirname, "./packages/core/src"),
       "@convertkit/converter-image": path.resolve(__dirname, "./packages/converters/image/src"),
       "@convertkit/converter-pdf-text": path.resolve(__dirname, "./packages/converters/pdf-text/src"),
+      "@convertkit/converter-csv-json": path.resolve(__dirname, "./packages/converters/csv-json/src"),
     },
     coverage: {
       provider: "v8",

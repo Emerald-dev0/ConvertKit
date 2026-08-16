@@ -67,4 +67,9 @@ export async function ensureFixtures() {
     "UiA+PgpzdGFydHhyZWYKMzk2CiUlRU9G";
   const pdfBuffer = Buffer.from(minimalPdfBase64, "base64");
   await writeFile(pdfPath, pdfBuffer);
+
+  // Generate a simple CSV
+  const csvPath = join(FIXTURES_DIR, "sample.csv");
+  const csvContent = "id,name,email\n1,Emerald,emerald@example.com\n2,Daniel,daniel@example.com";
+  await writeFile(csvPath, csvContent);
 }

@@ -110,7 +110,7 @@ export default function Playground() {
             <div className="flex flex-col gap-3">
               <label className="text-xs font-bold tracking-wider uppercase text-muted">Target Format</label>
               <div className="flex gap-2 flex-wrap">
-                {['jpg', 'png', 'webp', 'txt'].map((fmt) => (
+                {['jpg', 'png', 'webp', 'txt', 'json'].map((fmt) => (
                   <button
                     key={fmt}
                     type="button"

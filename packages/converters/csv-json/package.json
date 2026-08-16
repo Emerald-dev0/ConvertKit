@@ -1,0 +1,36 @@
+{
+  "name": "@convertkit/converter-csv-json",
+  "version": "0.1.0",
+  "description": "CSV to JSON converter for ConvertKit using csv-parse",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "csv-parse": "^5.5.6"
+  },
+  "peerDependencies": {
+    "@convertkit/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@convertkit/core": "workspace:*",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "convertkit",
+    "converter",
+    "csv",
+    "json",
+    "data"
+  ],
+  "author": "ConvertKit Contributors",
+  "license": "MIT"
+}

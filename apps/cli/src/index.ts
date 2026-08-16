@@ -10,6 +10,7 @@ import {
 } from "@convertkit/core";
 import { ImageConverter } from "@convertkit/converter-image";
 import { PdfTextConverter } from "@convertkit/converter-pdf-text";
+import { CsvJsonConverter } from "@convertkit/converter-csv-json";
 
 const program = new Command();
 const detector = new FormatDetector();
@@ -18,6 +19,7 @@ const registry = new ConverterRegistry();
 // Initialize registry with available converters
 registry.register(new ImageConverter());
 registry.register(new PdfTextConverter());
+registry.register(new CsvJsonConverter());
 
 program
   .name("convertkit")
