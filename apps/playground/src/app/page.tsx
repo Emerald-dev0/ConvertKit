@@ -9,7 +9,10 @@ import {
   RefreshCcw,
   CheckCircle2,
   AlertCircle,
-  FileCode2
+  FileCode2,
+  Terminal,
+  Code2,
+  ChevronRight
 } from "lucide-react";
 import { convertFile, ConversionState } from "./actions";
 
@@ -215,6 +218,21 @@ export default function Playground() {
                       <CheckCircle2 size={20} />
                       Conversion Successful
                     </div>
+
+                    {state.pipeline && (
+                      <div className="flex flex-col gap-2 items-center">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted">Pipeline Path</span>
+                        <div className="flex items-center gap-2 text-xs font-mono bg-white border border-[#EAEAEA] px-3 py-2 rounded-md">
+                          {state.pipeline.map((step, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                              <span>{step}</span>
+                              {i < state.pipeline!.length - 1 && <ChevronRight size={12} className="text-muted" />}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex gap-2">
                       <a
                         href={state.output}
@@ -256,6 +274,61 @@ export default function Playground() {
             </AnimatePresence>
           </div>
         </section>
+      </motion.div>
+
+      {/* Developer Hub Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4, duration: 0.8 }}
+        className="w-full max-w-4xl mt-16"
+      >
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-px flex-1 bg-[#EAEAEA]" />
+          <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted flex items-center gap-2">
+            <Terminal size={14} />
+            For Developers
+          </h2>
+          <div className="h-px flex-1 bg-[#EAEAEA]" />
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* SDK Integration */}
+          <div className="document-card rounded-xl p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-blue-50 text-blue-600 rounded-md">
+                <Code2 size={20} />
+              </div>
+              <h3 className="font-bold">SDK Integration</h3>
+            </div>
+            <pre className="bg-[#111111] text-[#EAEAEA] p-5 rounded-lg text-xs font-mono overflow-x-auto leading-relaxed">
+{`import { convert } from "@convertkit/core";
+
+// Programmatic usage
+const result = await convert(file, {
+  to: "${targetFormat}"
+});`}
+            </pre>
+          </div>
+
+          {/* CLI Usage */}
+          <div className="document-card rounded-xl p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-orange-50 text-orange-600 rounded-md">
+                <Terminal size={20} />
+              </div>
+              <h3 className="font-bold">CLI Usage</h3>
+            </div>
+            <pre className="bg-[#111111] text-[#EAEAEA] p-5 rounded-lg text-xs font-mono overflow-x-auto leading-relaxed">
+{`# Install CLI globally
+npm install -g @convertkit/cli
+
+# Run conversion
+convertkit ${file?.name || "input.file"} -f ${targetFormat}`}
+            </pre>
+          </div>
+        </div>
       </motion.div>
 
       {/* Technical Footer */}

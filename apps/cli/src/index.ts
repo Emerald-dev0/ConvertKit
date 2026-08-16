@@ -7,6 +7,7 @@ import {
   FormatDetector,
   ConverterRegistry,
   findFormatByExtension,
+  PipelineConverter,
 } from "@convertkit/core";
 import { ImageConverter } from "@convertkit/converter-image";
 import { PdfTextConverter } from "@convertkit/converter-pdf-text";
@@ -71,6 +72,11 @@ program
       if (!converter) {
         console.error(chalk.red(`Error: No converter found for ${fromFormat.id} to ${toFormat.id}`));
         process.exit(1);
+      }
+
+      if (converter instanceof PipelineConverter) {
+        const steps = converter.getSteps().map(s => s.metadata.name).join(" -> ");
+        console.log(chalk.dim(`Pipeline path: ${steps}`));
       }
 
       // 4. Convert

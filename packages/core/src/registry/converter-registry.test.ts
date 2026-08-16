@@ -67,4 +67,28 @@ describe("ConverterRegistry", () => {
     const resolved = registry.resolveConverter(FORMATS.PDF, FORMATS.JSON);
     expect(resolved).toBeUndefined();
   });
+
+  it("should find a multi-step path", () => {
+    // PDF -> DOCX
+    const c1 = mockConverter("c1", ConversionFidelity.HIGH);
+
+    // DOCX -> JPG
+    const c2: Converter = {
+      metadata: { id: "c2", name: "c2", description: "", version: "1" },
+      capabilities: [{ from: FORMATS.DOCX, to: FORMATS.JPG, fidelity: ConversionFidelity.HIGH }],
+      validate: async () => true,
+      convert: async () => ({ data: new Uint8Array(), format: FORMATS.JPG })
+    };
+
+    registry.register(c1);
+    registry.register(c2);
+
+    const path = registry.findPath(FORMATS.PDF, FORMATS.JPG);
+    expect(path).toHaveLength(2);
+    expect(path?.[0].metadata.id).toBe("c1");
+    expect(path?.[1].metadata.id).toBe("c2");
+
+    const resolved = registry.resolveConverter(FORMATS.PDF, FORMATS.JPG);
+    expect(resolved?.metadata.id).toContain("pipeline");
+  });
 });

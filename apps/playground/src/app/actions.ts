@@ -3,7 +3,8 @@
 import {
   FormatDetector,
   ConverterRegistry,
-  FORMATS
+  FORMATS,
+  PipelineConverter,
 } from "@convertkit/core";
 import { ImageConverter } from "@convertkit/converter-image";
 import { PdfTextConverter } from "@convertkit/converter-pdf-text";
@@ -26,6 +27,7 @@ export type ConversionState = {
   error?: string;
   output?: string; // base64
   format?: string;
+  pipeline?: string[];
 };
 
 export async function convertFile(formData: FormData): Promise<ConversionState> {
@@ -57,6 +59,10 @@ export async function convertFile(formData: FormData): Promise<ConversionState> 
       return { error: `No converter found for ${fromFormat.id} to ${toFormat.id}` };
     }
 
+    const pipelineSteps = converter instanceof PipelineConverter
+      ? converter.getSteps().map(s => s.metadata.name)
+      : [converter.metadata.name];
+
     // 4. Convert
     const result = await converter.convert(inputData, { to: toFormat });
 
@@ -66,7 +72,8 @@ export async function convertFile(formData: FormData): Promise<ConversionState> 
     return {
       success: true,
       output: `data:${toFormat.mimeTypes[0]};base64,${base64}`,
-      format: toFormat.id
+      format: toFormat.id,
+      pipeline: pipelineSteps
     };
   } catch (err: unknown) {
     const error = err as Error;
