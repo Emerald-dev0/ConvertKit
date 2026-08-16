@@ -6,10 +6,12 @@ import {
   FORMATS
 } from "@convertkit/core";
 import { ImageConverter } from "@convertkit/converter-image";
+import { PdfTextConverter } from "@convertkit/converter-pdf-text";
 
 const detector = new FormatDetector();
 const registry = new ConverterRegistry();
 registry.register(new ImageConverter());
+registry.register(new PdfTextConverter());
 
 export type ConversionState = {
   success?: boolean;

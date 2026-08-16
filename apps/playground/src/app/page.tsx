@@ -109,14 +109,14 @@ export default function Playground() {
             {/* Format Selection */}
             <div className="flex flex-col gap-3">
               <label className="text-xs font-bold tracking-wider uppercase text-muted">Target Format</label>
-              <div className="flex gap-2">
-                {['jpg', 'png', 'webp'].map((fmt) => (
+              <div className="flex gap-2 flex-wrap">
+                {['jpg', 'png', 'webp', 'txt'].map((fmt) => (
                   <button
                     key={fmt}
                     type="button"
                     onClick={() => setTargetFormat(fmt)}
                     className={`
-                      flex-1 py-3 px-4 rounded-lg text-sm font-bold transition-all border
+                      flex-1 min-w-[80px] py-3 px-4 rounded-lg text-sm font-bold transition-all border
                       ${targetFormat === fmt
                         ? 'bg-foreground text-white border-foreground'
                         : 'bg-white border-[#EAEAEA] hover:border-muted text-foreground'

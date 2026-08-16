@@ -9,6 +9,7 @@ import {
   findFormatByExtension,
 } from "@convertkit/core";
 import { ImageConverter } from "@convertkit/converter-image";
+import { PdfTextConverter } from "@convertkit/converter-pdf-text";
 
 const program = new Command();
 const detector = new FormatDetector();
@@ -16,6 +17,7 @@ const registry = new ConverterRegistry();
 
 // Initialize registry with available converters
 registry.register(new ImageConverter());
+registry.register(new PdfTextConverter());
 
 program
   .name("convertkit")

@@ -14,6 +14,7 @@
   "dependencies": {
     "@convertkit/core": "workspace:*",
     "@convertkit/converter-image": "workspace:*",
+    "@convertkit/converter-pdf-text": "workspace:*",
     "commander": "^12.0.0",
     "chalk": "^5.0.0"
   },

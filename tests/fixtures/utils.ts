@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -51,4 +51,20 @@ export async function ensureFixtures() {
   })
     .webp()
     .toFile(webpPath);
+
+  // Generate a simple PDF
+  const pdfPath = join(FIXTURES_DIR, "sample.pdf");
+  const minimalPdfBase64 =
+    "JVBERi0xLjcKCjEgMCBvYmogPDwgL1R5cGUgL0NhdGFsb2cgL1BhZ2VzIDIgMCBSID4+IGVuZG9iagoyIDAg" +
+    "b2JqIDw8IC9UeXBlIC9QYWdlcyAvS2lkcyBbIDMgMCBSIF0gL0NvdW50IDEgPj4gZW5kb2JqCjMgMCBvYmog" +
+    "PDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWyAwIDAgNjEyIDc5MiBdIC9SZXNvdXJj" +
+    "ZXMgPDwgL0ZvbnQgPDwgL0YxIDQgMCBSID4+ID4+IC9Db250ZW50cyA1IDAgUiA+PiBlbmRvYmoKNCAwIG9i" +
+    "aiA8PCAvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2EgPj4gZW5kb2Jq" +
+    "CjUgMCBvYmogPDwgL1xlbmd0aCA0NCA+PiBzdHJlYW0KQlQgL0YxIDI0IFRmIDEwMCAxMDAgVGQgKEhlbGxv" +
+    "IFdvcmxkKSBUaiBFVAplbmRzdHJlYW0gZW5kb2JqCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAw" +
+    "MDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDY4IDAwMDAwIG4gCjAwMDAwMDAxMjEgMDAwMDAgbiAKMDAwMDAw" +
+    "MDI0MCAwMDAwMCBuIAowMDAwMDAwMzAzIDAwMDAwIG4gCnRyYWlsZXIKPDwgL1NpemUgNiAvUm9vdCAxIDAg" +
+    "UiA+PgpzdGFydHhyZWYKMzk2CiUlRU9G";
+  const pdfBuffer = Buffer.from(minimalPdfBase64, "base64");
+  await writeFile(pdfPath, pdfBuffer);
 }
