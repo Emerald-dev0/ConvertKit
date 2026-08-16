@@ -12,6 +12,8 @@ import { ImageConverter } from "@convertkit/converter-image";
 import { PdfTextConverter } from "@convertkit/converter-pdf-text";
 import { CsvJsonConverter } from "@convertkit/converter-csv-json";
 import { MarkdownHtmlConverter } from "@convertkit/converter-markdown-html";
+import { OfficePdfConverter } from "@convertkit/converter-office-pdf";
+import { FfmpegConverter } from "@convertkit/converter-ffmpeg";
 
 const program = new Command();
 const detector = new FormatDetector();
@@ -22,6 +24,8 @@ registry.register(new ImageConverter());
 registry.register(new PdfTextConverter());
 registry.register(new CsvJsonConverter());
 registry.register(new MarkdownHtmlConverter());
+registry.register(new OfficePdfConverter());
+registry.register(new FfmpegConverter());
 
 program
   .name("convertkit")

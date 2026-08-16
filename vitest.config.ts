@@ -11,6 +11,8 @@ export default defineConfig({
       "@convertkit/converter-pdf-text": path.resolve(__dirname, "./packages/converters/pdf-text/src"),
       "@convertkit/converter-csv-json": path.resolve(__dirname, "./packages/converters/csv-json/src"),
       "@convertkit/converter-markdown-html": path.resolve(__dirname, "./packages/converters/markdown-html/src"),
+      "@convertkit/converter-office-pdf": path.resolve(__dirname, "./packages/converters/office-pdf/src"),
+      "@convertkit/converter-ffmpeg": path.resolve(__dirname, "./packages/converters/ffmpeg/src"),
     },
     coverage: {
       provider: "v8",

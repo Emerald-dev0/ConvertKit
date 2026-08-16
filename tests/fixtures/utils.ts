@@ -77,4 +77,14 @@ export async function ensureFixtures() {
   const mdPath = join(FIXTURES_DIR, "sample.md");
   const mdContent = "# Sample\n\nThis is a sample markdown file.";
   await writeFile(mdPath, mdContent);
+
+  // Generate a dummy XLSX (ZIP signature)
+  const xlsxPath = join(FIXTURES_DIR, "sample.xlsx");
+  const zipSig = new Uint8Array([0x50, 0x4b, 0x03, 0x04]);
+  await writeFile(xlsxPath, zipSig);
+
+  // Generate a dummy MP3 (ID3 signature)
+  const mp3Path = join(FIXTURES_DIR, "sample.mp3");
+  const mp3Sig = new Uint8Array([0x49, 0x44, 0x33, 0x00, 0x00, 0x00]);
+  await writeFile(mp3Path, mp3Sig);
 }

@@ -34,10 +34,11 @@ export class FormatDetector {
     // 1. Check Signatures
     const signatureMatch = this.matchSignature(bytes);
     if (signatureMatch) {
-      // Basic check for ZIP-based formats (like DOCX)
-      if (signatureMatch.id === "docx" && options.filename) {
+      // Check for ZIP-based formats (DOCX, XLSX, PPTX)
+      const zipBased = ["docx", "xlsx", "pptx"];
+      if (zipBased.includes(signatureMatch.id) && options.filename) {
          const extMatch = findFormatByExtension(options.filename);
-         if (extMatch?.id === "docx") return extMatch;
+         if (extMatch && zipBased.includes(extMatch.id)) return extMatch;
       }
       return signatureMatch;
     }

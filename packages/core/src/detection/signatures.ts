@@ -37,6 +37,26 @@ export const SIGNATURES: FileSignature[] = [
     bytes: [0x50, 0x4b, 0x03, 0x04], // ZIP signature (DOCX is a ZIP)
   },
   {
+    formatId: "xlsx",
+    bytes: [0x50, 0x4b, 0x03, 0x04], // ZIP signature
+  },
+  {
+    formatId: "pptx",
+    bytes: [0x50, 0x4b, 0x03, 0x04], // ZIP signature
+  },
+  {
+    formatId: "xls",
+    bytes: [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1], // OLE signature
+  },
+  {
+    formatId: "mp3",
+    bytes: [0x49, 0x44, 0x33], // ID3
+  },
+  {
+    formatId: "mp3",
+    bytes: [0xff, 0xfb], // MP3 without ID3
+  },
+  {
     formatId: "json",
     bytes: [0x7b], // '{'
   },

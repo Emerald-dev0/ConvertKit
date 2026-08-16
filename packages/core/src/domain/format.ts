@@ -78,6 +78,46 @@ export const FORMATS = {
     extensions: [".html", ".htm"],
     mimeTypes: ["text/html"],
   },
+  XLS: {
+    id: "xls",
+    name: "Microsoft Excel Spreadsheet",
+    extensions: [".xls"],
+    mimeTypes: ["application/vnd.ms-excel"],
+  },
+  XLSX: {
+    id: "xlsx",
+    name: "Microsoft Excel (OpenXML)",
+    extensions: [".xlsx"],
+    mimeTypes: [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ],
+  },
+  PPTX: {
+    id: "pptx",
+    name: "Microsoft PowerPoint (OpenXML)",
+    extensions: [".pptx"],
+    mimeTypes: [
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ],
+  },
+  MP3: {
+    id: "mp3",
+    name: "MP3 Audio",
+    extensions: [".mp3"],
+    mimeTypes: ["audio/mpeg"],
+  },
+  MP4: {
+    id: "mp4",
+    name: "MP4 Video",
+    extensions: [".mp4"],
+    mimeTypes: ["video/mp4"],
+  },
+  WAV: {
+    id: "wav",
+    name: "Waveform Audio File Format",
+    extensions: [".wav"],
+    mimeTypes: ["audio/wav"],
+  },
 } as const satisfies Record<string, FileFormat>;
 
 /**

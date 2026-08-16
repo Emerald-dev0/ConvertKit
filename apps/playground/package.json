@@ -14,6 +14,8 @@
     "@convertkit/converter-pdf-text": "workspace:*",
     "@convertkit/converter-csv-json": "workspace:*",
     "@convertkit/converter-markdown-html": "workspace:*",
+    "@convertkit/converter-office-pdf": "workspace:*",
+    "@convertkit/converter-ffmpeg": "workspace:*",
     "@convertkit/core": "workspace:*",
     "clsx": "^2.1.1",
     "framer-motion": "^12.0.0-alpha.0",

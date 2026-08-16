@@ -17,6 +17,8 @@
     "@convertkit/converter-pdf-text": "workspace:*",
     "@convertkit/converter-csv-json": "workspace:*",
     "@convertkit/converter-markdown-html": "workspace:*",
+    "@convertkit/converter-office-pdf": "workspace:*",
+    "@convertkit/converter-ffmpeg": "workspace:*",
     "commander": "^12.0.0",
     "chalk": "^5.0.0"
   },
