@@ -11,6 +11,7 @@ import {
 import { ImageConverter } from "@convertkit/converter-image";
 import { PdfTextConverter } from "@convertkit/converter-pdf-text";
 import { CsvJsonConverter } from "@convertkit/converter-csv-json";
+import { MarkdownHtmlConverter } from "@convertkit/converter-markdown-html";
 
 const program = new Command();
 const detector = new FormatDetector();
@@ -20,6 +21,7 @@ const registry = new ConverterRegistry();
 registry.register(new ImageConverter());
 registry.register(new PdfTextConverter());
 registry.register(new CsvJsonConverter());
+registry.register(new MarkdownHtmlConverter());
 
 program
   .name("convertkit")

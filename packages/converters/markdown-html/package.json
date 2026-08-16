@@ -1,0 +1,35 @@
+{
+  "name": "@convertkit/converter-markdown-html",
+  "version": "0.1.0",
+  "description": "Markdown to HTML converter for ConvertKit using marked",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "marked": "^14.1.2"
+  },
+  "peerDependencies": {
+    "@convertkit/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@convertkit/core": "workspace:*"
+  },
+  "keywords": [
+    "convertkit",
+    "converter",
+    "markdown",
+    "html",
+    "documentation"
+  ],
+  "author": "ConvertKit Contributors",
+  "license": "MIT"
+}

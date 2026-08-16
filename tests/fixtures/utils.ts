@@ -72,4 +72,9 @@ export async function ensureFixtures() {
   const csvPath = join(FIXTURES_DIR, "sample.csv");
   const csvContent = "id,name,email\n1,Emerald,emerald@example.com\n2,Daniel,daniel@example.com";
   await writeFile(csvPath, csvContent);
+
+  // Generate a simple Markdown
+  const mdPath = join(FIXTURES_DIR, "sample.md");
+  const mdContent = "# Sample\n\nThis is a sample markdown file.";
+  await writeFile(mdPath, mdContent);
 }

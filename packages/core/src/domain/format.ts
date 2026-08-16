@@ -72,6 +72,12 @@ export const FORMATS = {
     extensions: [".md", ".markdown"],
     mimeTypes: ["text/markdown"],
   },
+  HTML: {
+    id: "html",
+    name: "HyperText Markup Language",
+    extensions: [".html", ".htm"],
+    mimeTypes: ["text/html"],
+  },
 } as const satisfies Record<string, FileFormat>;
 
 /**
