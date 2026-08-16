@@ -1,0 +1,36 @@
+{
+  "name": "@convertkit/converter-ocr",
+  "version": "0.1.0",
+  "description": "OCR converter for ConvertKit using Tesseract.js",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "tesseract.js": "^5.1.1"
+  },
+  "peerDependencies": {
+    "@convertkit/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@convertkit/core": "workspace:*",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "convertkit",
+    "converter",
+    "ocr",
+    "tesseract",
+    "text-extraction"
+  ],
+  "author": "ConvertKit Contributors",
+  "license": "MIT"
+}

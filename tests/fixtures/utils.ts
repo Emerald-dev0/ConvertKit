@@ -87,4 +87,14 @@ export async function ensureFixtures() {
   const mp3Path = join(FIXTURES_DIR, "sample.mp3");
   const mp3Sig = new Uint8Array([0x49, 0x44, 0x33, 0x00, 0x00, 0x00]);
   await writeFile(mp3Path, mp3Sig);
+
+  // Generate an image with text for OCR
+  const ocrPath = join(FIXTURES_DIR, "ocr-sample.png");
+  const svgBuffer = Buffer.from(
+    `<svg width="200" height="100">
+      <rect width="100%" height="100%" fill="white"/>
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="black">Hello OCR</text>
+    </svg>`
+  );
+  await sharp(svgBuffer).png().toFile(ocrPath);
 }

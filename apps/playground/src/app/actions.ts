@@ -12,6 +12,7 @@ import { CsvJsonConverter } from "@convertkit/converter-csv-json";
 import { MarkdownHtmlConverter } from "@convertkit/converter-markdown-html";
 import { OfficePdfConverter } from "@convertkit/converter-office-pdf";
 import { FfmpegConverter } from "@convertkit/converter-ffmpeg";
+import { TesseractOCRConverter } from "@convertkit/converter-ocr";
 
 const detector = new FormatDetector();
 const registry = new ConverterRegistry();
@@ -21,6 +22,7 @@ registry.register(new CsvJsonConverter());
 registry.register(new MarkdownHtmlConverter());
 registry.register(new OfficePdfConverter());
 registry.register(new FfmpegConverter());
+registry.register(new TesseractOCRConverter());
 
 export type ConversionState = {
   success?: boolean;

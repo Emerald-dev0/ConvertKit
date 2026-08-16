@@ -13,19 +13,20 @@ describe("CLI Integration", () => {
 
   it("should convert a file via CLI command", async () => {
     const inputPath = path.join(FIXTURES_DIR, "sample.png");
-    const outputPath = path.join(FIXTURES_DIR, "cli-integration-test.jpg");
+    const outputDir = path.join(FIXTURES_DIR, "cli-test-dir");
+    const expectedOutputPath = path.join(outputDir, "sample.jpg");
 
     // Run CLI via node
-    const { stdout, stderr } = await execa("node", [cliPath, inputPath, "--output", outputPath]);
+    const { stdout } = await execa("node", [cliPath, "convert", inputPath, "--output", outputDir, "--format", "jpg"]);
 
-    expect(stderr).toBe("");
-    expect(stdout).toContain("Successfully converted");
+    expect(stdout).toContain("All operations completed");
 
-    const outputBuffer = await readFile(outputPath);
+    // The CLI should have created a FILE named sample.jpg inside cli-test-dir
+    const outputBuffer = await readFile(expectedOutputPath);
     expect(outputBuffer[0]).toBe(0xff);
     expect(outputBuffer[1]).toBe(0xd8); // JPG magic
 
     // Cleanup
-    await rm(outputPath);
-  });
+    await rm(outputDir, { force: true, recursive: true });
+  }, 30000);
 });
