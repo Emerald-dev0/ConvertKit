@@ -18,6 +18,9 @@ build
 # Testing
 coverage
 .vitest-result
+tests/fixtures/*.png
+tests/fixtures/*.jpg
+tests/fixtures/*.webp
 
 # Environment
 .env
