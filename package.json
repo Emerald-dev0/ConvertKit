@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "pnpm -r typecheck",
+    "playground:dev": "pnpm --filter @convertkit/playground dev",
+    "playground:build": "pnpm --filter @convertkit/playground build",
     "prepare": "husky"
   },
   "devDependencies": {
