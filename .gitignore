@@ -7,6 +7,7 @@ dist
 out
 build
 *.tsbuildinfo
+.next
 
 # IDEs and Editors
 .idea
