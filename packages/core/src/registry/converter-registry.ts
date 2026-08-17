@@ -85,35 +85,60 @@ export class ConverterRegistry {
 
   /**
    * Finds a sequence of converters that can transform 'from' to 'to'.
-   * Uses Breadth-First Search (BFS) to find the shortest path.
+   * Uses Dijkstra's algorithm to find the "cheapest" (highest fidelity) path.
    */
   findPath(from: FileFormat, to: FileFormat): Converter[] | undefined {
-    const queue: { formatId: string; path: Converter[] }[] = [
-      { formatId: from.id, path: [] },
-    ];
-    const visited = new Set<string>([from.id]);
+    const fidelityWeights = {
+      [ConversionFidelity.HIGH]: 1,
+      [ConversionFidelity.MEDIUM]: 10,
+      [ConversionFidelity.LOW]: 100,
+    };
 
-    while (queue.length > 0) {
-      const { formatId, path } = queue.shift()!;
+    interface Node {
+      formatId: string;
+      cost: number;
+      path: Converter[];
+    }
+
+    const pq: Node[] = [{ formatId: from.id, cost: 0, path: [] }];
+    const minCosts = new Map<string, number>();
+    minCosts.set(from.id, 0);
+
+    let bestPath: Converter[] | undefined;
+    let minPathCost = Infinity;
+
+    while (pq.length > 0) {
+      // Simple priority queue (sort by cost)
+      pq.sort((a, b) => a.cost - b.cost);
+      const { formatId, cost, path } = pq.shift()!;
 
       if (formatId === to.id) {
-        return path;
+        if (cost < minPathCost) {
+          minPathCost = cost;
+          bestPath = path;
+        }
+        continue;
       }
 
-      const availableConverters = this.getConverters();
-      for (const converter of availableConverters) {
+      if (cost > (minCosts.get(formatId) ?? Infinity)) continue;
+
+      for (const converter of this.getConverters()) {
         for (const cap of converter.capabilities) {
-          if (cap.from.id === formatId && !visited.has(cap.to.id)) {
-            visited.add(cap.to.id);
-            queue.push({
-              formatId: cap.to.id,
-              path: [...path, converter],
-            });
+          if (cap.from.id === formatId) {
+            const newCost = cost + fidelityWeights[cap.fidelity];
+            if (newCost < (minCosts.get(cap.to.id) ?? Infinity)) {
+              minCosts.set(cap.to.id, newCost);
+              pq.push({
+                formatId: cap.to.id,
+                cost: newCost,
+                path: [...path, converter],
+              });
+            }
           }
         }
       }
     }
 
-    return undefined;
+    return bestPath;
   }
 }

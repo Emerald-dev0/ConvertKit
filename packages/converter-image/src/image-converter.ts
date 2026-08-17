@@ -35,6 +35,9 @@ export class ImageConverter implements Converter {
     { from: FORMATS.ICO, to: FORMATS.PNG, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.PSD, to: FORMATS.PNG, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.AVIF, to: FORMATS.WEBP, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.SVG, to: FORMATS.PNG, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.GIF, to: FORMATS.WEBP, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.HEIC, to: FORMATS.JPG, fidelity: ConversionFidelity.HIGH },
   ];
 
   async validate(
@@ -48,7 +51,10 @@ export class ImageConverter implements Converter {
       FORMATS.TIFF.id,
       FORMATS.ICO.id,
       FORMATS.PSD.id,
-      FORMATS.AVIF.id
+      FORMATS.AVIF.id,
+      FORMATS.SVG.id,
+      FORMATS.GIF.id,
+      FORMATS.HEIC.id
     ];
     return supportedFormats.includes(from.id);
   }

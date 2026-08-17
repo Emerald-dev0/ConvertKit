@@ -34,6 +34,10 @@ export class FfmpegConverter implements Converter {
     { from: FORMATS.MKV, to: FORMATS.MP4, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.MOV, to: FORMATS.MP4, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.AVI, to: FORMATS.MP4, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.WMV, to: FORMATS.MP4, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.FLV, to: FORMATS.MP4, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.TS, to: FORMATS.MP4, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.WEBM, to: FORMATS.MP4, fidelity: ConversionFidelity.HIGH },
   ];
 
   async validate(
@@ -46,7 +50,11 @@ export class FfmpegConverter implements Converter {
       FORMATS.MP4.id,
       FORMATS.MKV.id,
       FORMATS.MOV.id,
-      FORMATS.AVI.id
+      FORMATS.AVI.id,
+      FORMATS.WMV.id,
+      FORMATS.FLV.id,
+      FORMATS.TS.id,
+      FORMATS.WEBM.id
     ];
     return supported.includes(from.id);
   }
