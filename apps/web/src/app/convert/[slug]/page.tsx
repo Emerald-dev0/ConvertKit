@@ -1,5 +1,6 @@
 import { ConversionHub } from "@/components/conversion-hub";
 import { ToolLink } from "@/components/tool-link";
+import { Nav } from "@/components/nav";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -44,12 +45,15 @@ export default async function ConversionPage({ params }: PageProps) {
   const to = parsed.to.toUpperCase();
 
   return (
-    <main className="min-h-screen flex flex-col items-center py-24 px-6 md:px-12">
-      <ConversionHub
-        initialTargetFormat={parsed.to}
-        title={<>Convert <span className="text-primary">{from}</span> to <span className="text-primary">{to}</span></>}
-        description={`Professional ${from} to ${to} transformation powered by the ConvertKit infrastructure. Fast, deterministic, and high-fidelity.`}
-      />
+    <main className="min-h-screen bg-[#F7F6F3] flex flex-col items-center py-24 px-6 md:px-12">
+      <Nav />
+      <div className="pt-20 w-full flex flex-col items-center">
+        <ConversionHub
+          initialTargetFormat={parsed.to}
+          title={<>Convert <span className="text-primary">{from}</span> to <span className="text-primary">{to}</span></>}
+          description={`Professional ${from} to ${to} transformation powered by the ConvertKit infrastructure. Fast, deterministic, and high-fidelity.`}
+        />
+      </div>
 
       {/* SEO Content Section */}
       <section className="mt-32 max-w-4xl w-full">

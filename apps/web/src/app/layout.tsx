@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Bricolage_Grotesque, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Auth0Provider } from '@auth0/nextjs-auth0';
 import "./globals.css";
 
 const inter = Inter({
@@ -35,11 +36,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} ${bricolage.variable} ${geistMono.variable} ${instrumentSerif.variable} font-sans antialiased bg-[#F7F6F3]`}
-      >
-        {children}
-      </body>
+      <Auth0Provider>
+        <body
+          className={`${inter.variable} ${bricolage.variable} ${geistMono.variable} ${instrumentSerif.variable} font-sans antialiased bg-[#F7F6F3]`}
+        >
+          {children}
+        </body>
+      </Auth0Provider>
     </html>
   );
 }

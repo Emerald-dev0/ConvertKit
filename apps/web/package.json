@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^4.26.0",
     "@convertkit/converter-csv-json": "workspace:*",
     "@convertkit/converter-ffmpeg": "workspace:*",
     "@convertkit/converter-image": "workspace:*",

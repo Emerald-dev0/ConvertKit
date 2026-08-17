@@ -17,6 +17,8 @@ import { TesseractOCRConverter } from "@convertkit/converter-ocr";
 import { getStorageProvider } from "@/lib/storage";
 import { db } from "@/lib/db";
 import { conversions } from "@/lib/db/schema";
+import { checkQuota } from "@/lib/entitlements";
+import { auth0 } from "@/lib/auth/auth0";
 import { randomUUID } from "node:crypto";
 
 const detector = new FormatDetector();
@@ -45,10 +47,20 @@ export async function convertFile(formData: FormData): Promise<ConversionState> 
   const startTime = performance.now();
   const conversionId = randomUUID();
 
+  // Get Auth0 Session
+  const session = await auth0.getSession();
+  const userId = session?.user?.sub;
+
   if (!file) return { error: "No file provided" };
   if (!targetId) return { error: "No target format specified" };
 
   try {
+    // 0. Check Quota & Entitlements
+    const quota = await checkQuota(userId, file.size);
+    if (!quota.allowed) {
+      return { error: quota.reason || "Quota exceeded" };
+    }
+
     const arrayBuffer = await file.arrayBuffer();
     const inputData = new Uint8Array(arrayBuffer);
 
@@ -94,6 +106,7 @@ export async function convertFile(formData: FormData): Promise<ConversionState> 
     const endTime = performance.now();
     await db.insert(conversions).values({
       id: conversionId,
+      userId: userId || "guest",
       fromFormat: fromFormat.id,
       toFormat: toFormat.id,
       inputSize: inputData.length,
@@ -119,6 +132,7 @@ export async function convertFile(formData: FormData): Promise<ConversionState> 
     // Log Failure
     await db.insert(conversions).values({
       id: conversionId,
+      userId: userId || "guest",
       fromFormat: "unknown",
       toFormat: targetId,
       inputSize: file.size,

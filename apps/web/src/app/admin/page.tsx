@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { conversions, waitlist } from "@/lib/db/schema";
+import { auth0 } from "@/lib/auth/auth0";
 import { count, desc } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import {
   BarChart3,
   Users,
@@ -13,6 +15,11 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
+  const session = await auth0.getSession();
+
+  if (!session) {
+    redirect("/auth/login");
+  }
   // Query actual data from D1
   const [totalConversions] = await db.select({ value: count() }).from(conversions);
   const [waitlistCount] = await db.select({ value: count() }).from(waitlist);
