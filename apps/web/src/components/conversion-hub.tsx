@@ -218,13 +218,22 @@ export function ConversionHub({
                   animate={{ opacity: 1, scale: 1 }}
                   className="w-full flex flex-col gap-6"
                 >
-                  <div className="aspect-square w-full rounded-lg overflow-hidden border border-[#EAEAEA] bg-white relative group">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={state.output}
-                      alt="Converted result"
-                      className="w-full h-full object-contain"
-                    />
+                  <div className="aspect-square w-full rounded-lg overflow-hidden border border-[#EAEAEA] bg-white relative group flex items-center justify-center">
+                    {['jpg', 'png', 'webp'].includes(state.format || '') ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={state.output}
+                        alt="Converted result"
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center gap-4 text-muted">
+                        <div className="p-6 bg-mint rounded-full text-primary">
+                          <CheckCircle2 size={48} />
+                        </div>
+                        <span className="font-mono uppercase text-xs tracking-widest">{state.format} File Ready</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-4">

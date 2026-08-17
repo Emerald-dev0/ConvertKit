@@ -29,6 +29,7 @@ export class OfficePdfConverter implements Converter {
     { from: FORMATS.XLSX, to: FORMATS.PDF, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.DOCX, to: FORMATS.PDF, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.PPTX, to: FORMATS.PDF, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.HTML, to: FORMATS.PDF, fidelity: ConversionFidelity.HIGH },
   ];
 
   async validate(
@@ -40,6 +41,7 @@ export class OfficePdfConverter implements Converter {
       FORMATS.XLSX.id,
       FORMATS.DOCX.id,
       FORMATS.PPTX.id,
+      FORMATS.HTML.id,
     ];
     return supported.includes(from.id);
   }

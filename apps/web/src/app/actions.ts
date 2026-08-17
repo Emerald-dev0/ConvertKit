@@ -14,6 +14,11 @@ import { OfficePdfConverter } from "@convertkit/converter-office-pdf";
 import { FfmpegConverter } from "@convertkit/converter-ffmpeg";
 import { TesseractOCRConverter } from "@convertkit/converter-ocr";
 
+import { getStorageProvider } from "@/lib/storage";
+import { db } from "@/lib/db";
+import { conversions } from "@/lib/db/schema";
+import { randomUUID } from "node:crypto";
+
 const detector = new FormatDetector();
 const registry = new ConverterRegistry();
 registry.register(new ImageConverter());
@@ -27,7 +32,7 @@ registry.register(new TesseractOCRConverter());
 export type ConversionState = {
   success?: boolean;
   error?: string;
-  output?: string; // base64
+  output?: string; // Download URL
   format?: string;
   pipeline?: string[];
   metadata?: Record<string, unknown>;
@@ -37,6 +42,8 @@ export type ConversionState = {
 export async function convertFile(formData: FormData): Promise<ConversionState> {
   const file = formData.get("file") as File;
   const targetId = formData.get("targetFormat") as string;
+  const startTime = performance.now();
+  const conversionId = randomUUID();
 
   if (!file) return { error: "No file provided" };
   if (!targetId) return { error: "No target format specified" };
@@ -51,7 +58,9 @@ export async function convertFile(formData: FormData): Promise<ConversionState> 
       mimeHint: file.type
     });
 
-    if (!fromFormat) return { error: "Could not identify input format" };
+    if (!fromFormat) {
+       return { error: "Could not identify input format" };
+    }
 
     // 2. Resolve Target
     const toFormat = Object.values(FORMATS).find(f => f.id === targetId);
@@ -76,12 +85,28 @@ export async function convertFile(formData: FormData): Promise<ConversionState> 
       metadata = await converter.inspect(result.data, toFormat);
     }
 
-    // 6. Return as base64
-    const base64 = Buffer.from(result.data as Uint8Array).toString("base64");
+    // 6. Store File (Avoid base64 for large files)
+    const storage = getStorageProvider();
+    const storageKey = await storage.save(result.data, `converted-${file.name}.${toFormat.extensions[0].replace(".", "")}`);
+    const downloadUrl = await storage.getDownloadUrl(storageKey);
+
+    // 7. Log to DB (D1)
+    const endTime = performance.now();
+    await db.insert(conversions).values({
+      id: conversionId,
+      fromFormat: fromFormat.id,
+      toFormat: toFormat.id,
+      inputSize: inputData.length,
+      outputSize: result.data instanceof Uint8Array ? result.data.length : null,
+      duration: endTime - startTime,
+      status: "success",
+      storageKey,
+      createdAt: new Date()
+    });
 
     return {
       success: true,
-      output: `data:${toFormat.mimeTypes[0]};base64,${base64}`,
+      output: downloadUrl,
       format: toFormat.id,
       pipeline: pipelineSteps,
       metadata,
@@ -90,6 +115,18 @@ export async function convertFile(formData: FormData): Promise<ConversionState> 
   } catch (err: unknown) {
     const error = err as Error;
     console.error("Conversion Error:", error);
+
+    // Log Failure
+    await db.insert(conversions).values({
+      id: conversionId,
+      fromFormat: "unknown",
+      toFormat: targetId,
+      inputSize: file.size,
+      status: "failed",
+      error: error.message,
+      createdAt: new Date()
+    }).catch(() => {});
+
     return { error: error.message || "An unexpected error occurred" };
   }
 }

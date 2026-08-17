@@ -29,6 +29,8 @@ export class ImageConverter implements Converter {
     { from: FORMATS.JPG, to: FORMATS.WEBP, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.WEBP, to: FORMATS.PNG, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.WEBP, to: FORMATS.JPG, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.PNG, to: FORMATS.PDF, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.JPG, to: FORMATS.PDF, fidelity: ConversionFidelity.HIGH },
   ];
 
   async validate(
@@ -68,6 +70,10 @@ export class ImageConverter implements Converter {
         pipeline = pipeline.webp({
           quality: (options.extra?.quality as number) ?? 80,
         });
+        break;
+      case "pdf":
+        // Sharp generates PDF by wrapping the image
+        pipeline = pipeline.toFormat("pdf");
         break;
       default:
         throw new Error(`Unsupported target format: ${targetFormat.id}`);
