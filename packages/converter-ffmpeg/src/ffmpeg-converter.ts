@@ -30,13 +30,24 @@ export class FfmpegConverter implements Converter {
     { from: FORMATS.MP3, to: FORMATS.MP4, fidelity: ConversionFidelity.MEDIUM },
     { from: FORMATS.MP3, to: FORMATS.WAV, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.WAV, to: FORMATS.MP3, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.MP4, to: FORMATS.MP3, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.MKV, to: FORMATS.MP4, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.MOV, to: FORMATS.MP4, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.AVI, to: FORMATS.MP4, fidelity: ConversionFidelity.HIGH },
   ];
 
   async validate(
     _input: Uint8Array | ReadableStream,
     from: FileFormat
   ): Promise<boolean> {
-    const supported: string[] = [FORMATS.MP3.id, FORMATS.WAV.id];
+    const supported: string[] = [
+      FORMATS.MP3.id,
+      FORMATS.WAV.id,
+      FORMATS.MP4.id,
+      FORMATS.MKV.id,
+      FORMATS.MOV.id,
+      FORMATS.AVI.id
+    ];
     return supported.includes(from.id);
   }
 

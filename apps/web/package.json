@@ -7,10 +7,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:push": "drizzle-kit push"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.26.0",
+    "@aws-sdk/client-s3": "^3.1111.0",
+    "@aws-sdk/s3-request-presigner": "^3.1111.0",
     "@convertkit/converter-csv-json": "workspace:*",
     "@convertkit/converter-ffmpeg": "workspace:*",
     "@convertkit/converter-image": "workspace:*",
@@ -19,6 +22,7 @@
     "@convertkit/converter-office-pdf": "workspace:*",
     "@convertkit/converter-pdf-text": "workspace:*",
     "@convertkit/core": "workspace:*",
+    "busboy": "^1.6.0",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
     "framer-motion": "^12.0.0-alpha.0",
@@ -30,6 +34,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^9.6.0",
+    "@types/busboy": "^1.5.4",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

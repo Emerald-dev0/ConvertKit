@@ -1,13 +1,16 @@
 import { LocalFileProvider } from "./local-provider";
+import { R2StorageProvider } from "./r2-provider";
 import { StorageProvider } from "./types";
 
-// For now, always use LocalFileProvider.
-// Future: If process.env.R2_ENABLED, use R2Provider.
 let provider: StorageProvider;
 
 export function getStorageProvider(): StorageProvider {
   if (!provider) {
-    provider = new LocalFileProvider();
+    if (process.env.R2_ACCESS_KEY_ID && process.env.R2_ACCOUNT_ID) {
+      provider = new R2StorageProvider();
+    } else {
+      provider = new LocalFileProvider();
+    }
   }
   return provider;
 }

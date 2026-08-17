@@ -14,7 +14,16 @@ import {
   Code2,
   ChevronRight
 } from "lucide-react";
-import { convertFile, ConversionState } from "@/app/actions";
+
+export type ConversionState = {
+  success?: boolean;
+  error?: string;
+  output?: string; // Download URL
+  format?: string;
+  pipeline?: string[];
+  metadata?: Record<string, unknown>;
+  warnings?: string[];
+};
 
 interface ConversionHubProps {
   initialTargetFormat?: string;
@@ -47,8 +56,17 @@ export function ConversionHub({
     formData.append("targetFormat", targetFormat);
 
     startTransition(async () => {
-      const result = await convertFile(formData);
-      setState(result);
+      try {
+        const response = await fetch("/api/convert", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+        setState(result);
+      } catch (err: any) {
+        setState({ error: "Network or platform error occurred." });
+      }
     });
   };
 

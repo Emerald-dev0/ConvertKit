@@ -31,13 +31,25 @@ export class ImageConverter implements Converter {
     { from: FORMATS.WEBP, to: FORMATS.JPG, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.PNG, to: FORMATS.PDF, fidelity: ConversionFidelity.HIGH },
     { from: FORMATS.JPG, to: FORMATS.PDF, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.TIFF, to: FORMATS.JPG, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.ICO, to: FORMATS.PNG, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.PSD, to: FORMATS.PNG, fidelity: ConversionFidelity.HIGH },
+    { from: FORMATS.AVIF, to: FORMATS.WEBP, fidelity: ConversionFidelity.HIGH },
   ];
 
   async validate(
     _input: Uint8Array | ReadableStream,
     from: FileFormat
   ): Promise<boolean> {
-    const supportedFormats: string[] = [FORMATS.PNG.id, FORMATS.JPG.id, FORMATS.WEBP.id];
+    const supportedFormats: string[] = [
+      FORMATS.PNG.id,
+      FORMATS.JPG.id,
+      FORMATS.WEBP.id,
+      FORMATS.TIFF.id,
+      FORMATS.ICO.id,
+      FORMATS.PSD.id,
+      FORMATS.AVIF.id
+    ];
     return supportedFormats.includes(from.id);
   }
 
