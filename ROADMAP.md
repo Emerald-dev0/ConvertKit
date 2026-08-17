@@ -1,29 +1,31 @@
 # ConvertKit Roadmap
 
-This roadmap outlines the planned development for ConvertKit.
+The evolution of ConvertKit from a developer toolkit to a universal conversion platform.
 
-## Phase 1: Foundation (Current)
-- [x] Initial repository setup (Monorepo, Tooling).
-- [ ] Core domain model (Formats, MIME types).
-- [ ] Converter contract & registry.
-- [ ] Basic format detection.
+## Phase 1: Foundation & Smart Engine (COMPLETED)
+- [x] Monorepo setup and core domain model.
+- [x] Intelligent BFS-based pathfinding.
+- [x] First 7 converter packages (Image, PDF, Data, Office, OCR).
+- [x] Production-ready CLI with batch support.
 
-## Phase 2: First Capabilities
-- [ ] PDF to Text extraction converter.
-- [ ] Image format converter (PNG, JPG, WEBP).
-- [ ] Command Line Interface (CLI).
+## Phase 2: Structural Polish & SEO (CURRENT)
+- [x] Flatten package structure for independent publishing.
+- [ ] Implement dynamic SEO routes in the Playground.
+- [ ] Multi-page "Conversion Utility" pages (e.g., `/pdf-to-docx`).
 
-## Phase 3: Expansion
-- [ ] Document converters (DOCX, Markdown, HTML).
-- [ ] Advanced format detection (File signatures).
-- [ ] Integration test suite with file fixtures.
+## Phase 3: The Hosted Layer
+- [ ] User Accounts & Authentication (Auth0).
+- [ ] Pro Plan & Billing Integration (Stripe/Paddle).
+- [ ] Conversion History & Presets.
+- [ ] Entitlements & Policy Layer (Commercial limits).
 
-## Phase 4: Reliability & Polish
-- [ ] Pipeline engine (Chaining transformations).
-- [ ] Security sandboxing for external engines.
-- [ ] Web Playground reference app.
+## Phase 4: API & Enterprise
+- [ ] Hosted API with Usage Billing.
+- [ ] Signed Download URLs.
+- [ ] Enterprise Isolation & High-Scale Workers.
+- [ ] Intelligent Structure Recovery (AI-enhanced).
 
 ## Phase 5: Ecosystem
-- [ ] Plugin system for community converters.
-- [ ] AI-enhanced conversion (OCR, structure recovery).
-- [ ] npm publication.
+- [ ] Plugin Registry.
+- [ ] Community-contributed Cloud Adapters.
+- [ ] Visual Pipeline Builder.

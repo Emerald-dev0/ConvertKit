@@ -2,7 +2,7 @@
 import { Command } from "commander";
 import chalk from "chalk";
 import cliProgress from "cli-progress";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { glob } from "glob";
 import {
@@ -106,7 +106,7 @@ program
         let finalPath: string;
         if (options.output) {
           const resolvedOutput = path.resolve(options.output);
-          const isDir = isBatch || (await stat(resolvedOutput).then(s => s.isDirectory()).catch(() => false)) || options.output.endsWith("/") || options.output.endsWith("\\");
+          const isDir = isBatch || (await stat(resolvedOutput).then((s: any) => s.isDirectory()).catch(() => false)) || options.output.endsWith("/") || options.output.endsWith("\\");
 
           if (isDir) {
             await mkdir(resolvedOutput, { recursive: true });

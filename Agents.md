@@ -1419,4 +1419,923 @@ That Git history will itself become evidence that ConvertKit was engineered deli
 
 And the README should be the opposite of the usual AI README: long, precise, technical, honest, and useful — with zero decorative image spam.
 
+  59. COMMERCIAL PRODUCT ARCHITECTURE
+
+ConvertKit has two intentionally separated layers:
+
+1. The Open Source Conversion Platform
+2. The Hosted ConvertKit Product
+
+These layers must not be unnecessarily coupled.
+
+The open-source platform exists so developers can install, inspect, extend, self-host, and integrate ConvertKit without depending on ConvertKit's hosted infrastructure.
+
+The hosted product exists as a commercial implementation built on top of the open-source platform.
+
+Conceptually:
+
+Open Source
+│
+├── @convertkit/core
+├── converter packages
+├── CLI
+├── plugins
+└── developer SDKs
+│
+↓
+Hosted ConvertKit
+│
+┌──────┼──────┐
+↓      ↓      ↓
+Free    Pro     API
+│      │      │
+Ads   Billing Usage
+│
+↓
+Enterprise
+
+
+## 59.1 OPEN-SOURCE CORE MUST REMAIN CLEAN
+
+The open-source packages MUST NOT depend on:
+
+- advertising systems
+- payment providers
+- subscription systems
+- ConvertKit accounts
+- ConvertKit hosted APIs
+- proprietary analytics
+- proprietary authentication
+- proprietary cloud storage
+- proprietary databases
+
+A developer must be able to install and use the core locally without creating a ConvertKit account.
+
+For example:
+
+npm install @convertkit/core
+
+must not require:
+
+- an API key
+- authentication
+- billing
+- internet access
+- a ConvertKit account
+
+unless a specific optional integration explicitly requires it.
+
+
+## 59.2 HOSTED PRODUCT
+
+The hosted product may provide functionality that is not part of the core package.
+
+Potential hosted capabilities include:
+
+- browser-based conversion
+- batch conversion
+- persistent conversion history
+- user accounts
+- cloud storage integrations
+- advanced OCR
+- AI-powered transformations
+- conversion presets
+- conversion analytics
+- API access
+- billing
+- subscriptions
+- advertisements
+- usage tracking
+- enterprise controls
+
+These capabilities belong to the hosted application layer.
+
+Do not move hosted-only concerns into the core package merely for convenience.
+
+
+# 60. FREE WEB PRODUCT
+
+ConvertKit should eventually provide a free hosted conversion experience.
+
+The free product should be genuinely useful.
+
+Potential free capabilities include:
+
+- standard conversions
+- reasonable file-size limits
+- limited concurrent jobs
+- limited batch processing
+- basic OCR
+- standard processing priority
+
+The exact limits are product decisions and MUST NOT be hardcoded into the conversion engine.
+
+Hosted entitlement configuration should determine limits.
+
+
+# 61. ADVERTISING
+
+Advertising is an intentional part of ConvertKit's commercial strategy.
+
+The free hosted experience may contain advertisements.
+
+However, advertisements MUST NOT compromise:
+
+- usability
+- accessibility
+- security
+- download reliability
+- conversion reliability
+- user trust
+- privacy
+- developer documentation
+
+Never use deceptive advertisements.
+
+Never make advertisements appear to be:
+
+- download buttons
+- conversion controls
+- system messages
+- security warnings
+- navigation elements
+
+Do not place aggressive advertising directly around critical actions such as:
+
+- file upload
+- conversion initiation
+- conversion progress
+- download
+
+Ads should be visually and semantically distinguishable from application controls.
+
+
+## 61.1 ADVERTISING IS HOSTED-ONLY
+
+The following MUST NOT contain advertising logic:
+
+- @convertkit/core
+- converter packages
+- CLI
+- SDK
+- plugin APIs
+- conversion engine
+- local conversion workflows
+
+Installing ConvertKit locally must never cause advertisements to appear.
+
+
+## 61.2 AD PROVIDER ABSTRACTION
+
+Do not hardcode an advertising provider throughout the application.
+
+If advertising is implemented, use an application-level abstraction.
+
+Conceptually:
+
+AdProvider
+│
+├── WebAdProvider
+└── Future providers
+
+The application should determine whether advertisements are displayed based on the user's entitlement.
+
+For example:
+
+Free user → advertisements enabled
+Pro user → advertisements disabled
+
+Do not scatter checks such as:
+
+if (user.plan === "pro")
+
+throughout unrelated UI components.
+
+
+# 62. PRO PRODUCT
+
+ConvertKit may provide a paid Pro plan.
+
+Pro MUST provide meaningful additional value rather than simply removing advertisements.
+
+Potential Pro capabilities include:
+
+- no advertisements
+- larger files
+- higher conversion limits
+- more concurrent jobs
+- larger batch jobs
+- priority processing
+- advanced conversion controls
+- advanced OCR
+- conversion history
+- saved conversion presets
+- extended retention
+- cloud integrations
+- advanced media controls
+- premium processing capabilities
+
+The exact feature set and pricing are product decisions.
+
+Do not hardcode pricing into converter packages.
+
+
+# 63. ENTITLEMENTS
+
+Commercial restrictions should be implemented through an entitlement/policy layer.
+
+The conversion engine should not contain scattered plan-specific logic.
+
+Prefer a model conceptually similar to:
+
+User
+↓
+Subscription
+↓
+Entitlements
+↓
+Conversion Policy
+↓
+Conversion Job
+
+Possible entitlement properties include:
+
+- maximum file size
+- maximum concurrent jobs
+- maximum batch size
+- daily/monthly usage
+- processing priority
+- OCR availability
+- advanced OCR availability
+- history retention
+- cloud integrations
+- advertising status
+
+The exact implementation may evolve.
+
+The important architectural rule is:
+
+COMMERCIAL POLICY ≠ CONVERSION ENGINE.
+
+
+# 64. BILLING ARCHITECTURE
+
+Billing is a hosted-product concern.
+
+The core conversion packages MUST NOT depend on Stripe, Paddle, or any payment provider.
+
+The hosted application should expose an internal billing abstraction.
+
+Conceptually:
+
+BillingProvider
+│
+├── Stripe
+├── Paddle
+└── Future Provider
+
+Application-level interfaces may include concepts such as:
+
+- createCheckout
+- getSubscription
+- cancelSubscription
+- getEntitlements
+- recordUsage
+- getUsage
+- handleWebhook
+
+Do not spread provider-specific implementation throughout the application.
+
+Payment-provider credentials MUST NEVER be committed to the repository.
+
+
+# 65. API PRODUCT
+
+ConvertKit should eventually provide a hosted API for developers who do not want to run conversion infrastructure themselves.
+
+The API is separate from the local open-source SDK.
+
+Conceptually:
+
+Developer Application
+↓
+ConvertKit API
+↓
+Job System
+↓
+ConvertKit Core
+↓
+Converter
+↓
+Output
+
+
+The API may eventually support:
+
+- authentication
+- asynchronous conversion jobs
+- synchronous conversion for small jobs
+- webhooks
+- batch processing
+- usage reporting
+- conversion status
+- signed download URLs
+- API keys
+- rate limits
+
+
+# 66. API BILLING
+
+API usage may eventually be monetized.
+
+Do not assume every conversion has identical infrastructure cost.
+
+A lightweight conversion such as:
+
+PNG → WEBP
+
+is fundamentally different from:
+
+4K video transcoding
+OCR
+large PDF processing
+multi-step conversion pipelines
+
+Therefore usage accounting should be abstracted.
+
+Conceptually:
+
+Conversion Job
+↓
+Usage Event
+↓
+Usage Meter
+↓
+Billing System
+
+Possible future usage dimensions include:
+
+- processing time
+- file size
+- conversion complexity
+- OCR processing
+- media duration
+- resource consumption
+
+Do not hardcode a final pricing model into the conversion engine.
+
+
+# 67. USAGE EVENTS
+
+If usage metering is introduced, conversion execution should produce structured usage information.
+
+A usage event might conceptually contain:
+
+- job identifier
+- input format
+- output format
+- file size
+- processing duration
+- converter identifier
+- pipeline length
+- optional resource metrics
+
+Do not include unnecessary sensitive file contents in usage events.
+
+Usage telemetry MUST respect the privacy model.
+
+
+# 68. PRIVACY
+
+Files are sensitive user data.
+
+Hosted ConvertKit must establish and clearly document:
+
+- file retention
+- deletion behavior
+- temporary storage
+- encryption
+- access controls
+- download authorization
+- logging policy
+- telemetry policy
+
+The system should minimize file retention.
+
+A conversion service should not retain user files indefinitely by default.
+
+The open-source/local implementation should not transmit user files to ConvertKit unless the developer explicitly configures a hosted integration.
+
+
+# 69. AI AND COMMERCIAL FEATURES
+
+AI is an optional capability.
+
+Do not introduce AI merely because a feature sounds more impressive with AI.
+
+Deterministic conversion should remain deterministic whenever practical.
+
+AI may be valuable for:
+
+- document structure recovery
+- OCR enhancement
+- semantic extraction
+- document transformation
+- speech transcription
+- summarization
+- metadata extraction
+- intelligent conversion suggestions
+- natural-language conversion workflows
+
+AI features may be offered as Pro or usage-metered capabilities.
+
+Every AI feature must document:
+
+- provider
+- model
+- network requirements
+- data handling
+- privacy implications
+- cost implications
+- nondeterministic behavior
+- limitations
+
+
+# 70. SEO PRODUCT ARCHITECTURE
+
+The hosted ConvertKit website should eventually be designed as both a useful conversion service and a search-discoverable resource.
+
+Potential URL structures include:
+
+/pdf-to-docx
+/pdf-to-jpg
+/png-to-webp
+/mp4-to-mp3
+/wav-to-mp3
+/docx-to-pdf
+
+as well as:
+
+/formats/pdf
+/formats/docx
+/formats/mp4
+
+and category pages such as:
+
+/document-converter
+/image-converter
+/audio-converter
+/video-converter
+
+Only create pages for conversions that the actual engine supports reliably.
+
+
+# 70.1 SEO PAGES MUST BE USEFUL
+
+Do not generate thousands of thin pages solely for search-engine traffic.
+
+A conversion page should provide real utility.
+
+Depending on the conversion, it may contain:
+
+- working converter
+- supported input information
+- supported output information
+- file-size limitations
+- fidelity considerations
+- processing information
+- privacy information
+- explanation of the conversion
+- troubleshooting
+- FAQs
+- related conversions
+- related formats
+- technical documentation
+
+Do not generate fake content for unsupported conversions.
+
+
+# 70.2 SEO AND PRODUCT MUST REMAIN SYNCHRONIZED
+
+The website MUST NOT advertise a conversion that the actual conversion engine cannot perform reliably.
+
+When a converter is added or removed, relevant hosted pages and documentation should be updated.
+
+The format registry should eventually be capable of powering machine-readable capability information for the hosted website.
+
+
+# 71. CONVERSION QUALITY
+
+ConvertKit MUST NOT claim perfect conversion fidelity without evidence.
+
+Different formats have different capabilities.
+
+For example:
+
+PDF → DOCX
+
+may involve:
+
+- text extraction
+- layout reconstruction
+- image extraction
+- table reconstruction
+- OCR
+- font substitution
+
+The system should communicate limitations honestly.
+
+Where practical, conversion jobs should expose metadata such as:
+
+- detected input format
+- selected converter
+- pipeline used
+- warnings
+- pages processed
+- OCR performed
+- validation results
+
+A future hosted UI may display a conversion-quality summary.
+
+
+# 72. CONTENT-AWARE PDF PROCESSING
+
+PDF processing should distinguish between:
+
+1. text-based PDFs
+2. image/scanned PDFs
+3. hybrid PDFs
+
+The architecture should allow different processing strategies.
+
+Conceptually:
+
+PDF
+↓
+Analyze document
+↓
+┌───────────────┬────────────────┬──────────────┐
+│ Text PDF      │ Scanned PDF    │ Hybrid PDF   │
+│               │                │              │
+↓               ↓                ↓
+Extraction      OCR              Extraction
++                +
+Reconstruction  OCR where needed
+Do not automatically invoke OCR when usable text extraction is available unless there is a documented reason.
+
+OCR should be treated as an explicit processing capability.
+
+73. FORMAT REGISTRY
+
+The format registry should eventually become a first-class source of truth.
+
+A format definition may contain:
+
+canonical identifier
+MIME types
+extensions
+signatures/magic numbers
+category
+capabilities
+metadata
+aliases
+documentation references
+
+Converters should declare capabilities against the registry.
+
+The system should be able to answer:
+
+What formats are supported?
+What can convert to PDF?
+What can PDF convert to?
+Which paths require intermediate formats?
+Which conversions require external engines?
+Which conversions require OCR?
+Which conversions are platform-dependent?
+74. CONVERSION GRAPH
+
+The conversion registry should be treated as a directed graph.
+
+Nodes represent formats.
+
+Edges represent conversion capabilities.
+
+Example:
+
+Markdown
+↓
+HTML
+↓
+PDF
+
+The engine may discover multi-step paths automatically.
+
+Path selection should consider:
+
+number of steps
+converter reliability
+fidelity
+availability
+platform support
+resource requirements
+explicit user preferences
+
+BFS may be appropriate for basic path discovery, but do not assume shortest path always equals best path.
+
+The architecture should allow future weighted pathfinding.
+
+75. PLUGIN ECOSYSTEM
+
+ConvertKit should eventually support external converter plugins.
+
+A plugin should be capable of declaring:
+
+formats
+capabilities
+dependencies
+converter implementation
+metadata
+platform requirements
+
+Plugins should not require modifying @convertkit/core.
+
+Plugin APIs must be versioned carefully.
+
+Do not expose unstable internals as plugin APIs.
+
+76. CLI
+
+The CLI is a first-class developer interface.
+
+Potential commands include:
+
+convertkit convert
+convertkit list
+convertkit detect
+convertkit inspect
+
+Future commands may include:
+
+convertkit pipeline
+convertkit doctor
+convertkit benchmark
+
+The CLI should work against the same core engine used by programmatic integrations.
+
+Do not duplicate conversion logic inside the CLI.
+
+77. DESKTOP APPLICATION
+
+A desktop application is NOT currently a required core product.
+
+Do not create an Electron/Tauri desktop application merely because file conversion could be presented as a desktop product.
+
+The local CLI and npm package already provide local execution.
+
+A desktop application may be considered later if there is a demonstrated user need.
+
+If implemented, it should consume the same core engine rather than duplicate conversion logic.
+
+78. WEB PLAYGROUND
+
+The current playground is a reference implementation.
+
+It should demonstrate:
+
+format detection
+supported conversions
+conversion pipelines
+developer integration
+CLI usage
+errors
+capabilities
+
+The playground may eventually evolve into the hosted ConvertKit product.
+
+Do not allow the playground's UI requirements to distort the architecture of the core package.
+
+79. HOSTED INFRASTRUCTURE
+
+Do not prematurely introduce:
+
+Kubernetes
+microservices
+distributed queues
+databases
+cloud storage
+complex orchestration
+
+The hosted architecture should initially remain as simple as practical.
+
+Introduce infrastructure only when justified by:
+
+actual scale
+reliability requirements
+security requirements
+billing requirements
+asynchronous processing requirements
+80. PRODUCT PRIORITY
+
+When deciding what to build next, prioritize:
+
+Reliable conversion infrastructure
+Developer experience
+Security
+Format coverage
+Conversion fidelity
+Testing
+Documentation
+Hosted usability
+Monetization
+Advanced AI capabilities
+
+Monetization must not cause the core project to become unreliable or hostile to developers.
+
+81. COMMERCIAL FEATURES MUST NOT POLLUTE THE PUBLIC API
+
+Do not add commercial parameters to core conversion APIs such as:
+
+convert(input, {
+plan: "pro"
+})
+
+or:
+
+convert(input, {
+ads: false
+})
+
+Commercial concerns belong outside the conversion abstraction.
+
+The core should answer:
+
+"What conversion should happen and how should it execute?"
+
+The hosted product should answer:
+
+"Is this user entitled to perform this operation?"
+
+82. OPEN-SOURCE / HOSTED BOUNDARY
+
+Maintain a clear architectural boundary.
+
+OPEN SOURCE:
+
+conversion contracts
+format detection
+converter registry
+conversion graph
+converter implementations
+local execution
+CLI
+plugin system
+SDK
+documentation
+
+HOSTED:
+
+accounts
+subscriptions
+billing
+advertisements
+hosted API
+cloud storage
+usage metering
+hosted job infrastructure
+hosted analytics
+commercial AI features
+
+Some functionality may exist in both layers, but ownership and dependency direction must remain clear.
+
+83. BUSINESS MODEL MUST REMAIN EVOLVABLE
+
+Do not hardcode:
+
+pricing
+subscription names
+currency
+billing provider
+advertisement provider
+API unit prices
+permanent usage limits
+
+These are product/business configuration.
+
+The architecture should allow pricing and commercial policies to change without rewriting conversion engines.
+
+84. IMPORTANT PRODUCT PRINCIPLE
+
+ConvertKit is not:
+
+"an online converter with an npm package."
+
+ConvertKit is:
+
+"an open-source universal conversion engine with a hosted commercial product built around it."
+
+The open-source engine creates developer adoption.
+
+The hosted product creates user adoption.
+
+SEO creates discoverability.
+
+Advertisements monetize free traffic.
+
+Pro monetizes power users.
+
+API usage monetizes developers and businesses.
+
+Enterprise monetizes high-volume and specialized deployments.
+
+These are complementary layers, not competing products.
+
+
+
+### And I'd make one structural change to your current repo plan
+
+
+Your existing architecture is:
+
+
+
+packages/
+  core
+  converters
+apps/
+  cli
+  playground
+
+That's fine right now.
+
+But as the hosted product arrives, don't turn it into:
+
+packages/
+  core
+  billing
+  ads
+  auth
+  stripe
+  api
+  ...
+
+Instead, eventually:
+
+convertkit/
+│
+├── packages/
+│   ├── core/
+│   ├── format-registry/
+│   ├── converter-image/
+│   ├── converter-pdf/
+│   ├── converter-office/
+│   ├── converter-ffmpeg/
+│   ├── converter-ocr/
+│   ├── cli/
+│   └── ...
+│
+├── apps/
+│   ├── playground/
+│   └── web/                 # hosted product later
+│
+├── services/                # hosted infrastructure later
+│   ├── api/
+│   ├── worker/
+│   ├── billing/
+│   └── ...
+│
+├── docs/
+├── examples/
+├── tests/
+└── .github/
+
+The important part is that packages/ stays independently usable.
+
+One more thing I'd change in the existing instructions
+
+Your current ROADMAP and PROJECT DEFINITION are a little too conservative now.
+
+The project's actual north star should be:
+
+                         CONVERTKIT
+                             │
+                 Universal Conversion Engine
+                             │
+             ┌───────────────┼───────────────┐
+             │               │               │
+           npm              CLI            Plugins
+             │               │               │
+             └───────────────┼───────────────┘
+                             │
+                       Hosted Product
+                             │
+             ┌───────────────┼───────────────┐
+             │               │               │
+           Free             Pro             API
+             │               │               │
+            Ads           No Ads          Usage Billing
+                             │
+                             ↓
+                         Enterprise
+
+
 ```text

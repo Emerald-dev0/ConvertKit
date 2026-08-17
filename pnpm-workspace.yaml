@@ -1,5 +1,4 @@
 packages:
   - 'packages/*'
-  - 'packages/converters/*'
   - 'apps/*'
   - 'examples/*'
