@@ -84,12 +84,50 @@ export class PdfTextConverter implements Converter {
       }
 
       const encoder = new TextEncoder();
+      const text = fullText.trim();
+
       return {
-        data: encoder.encode(fullText.trim()),
+        data: encoder.encode(text),
         format: FORMATS.TXT,
+        warnings: text.length === 0 ? ["No text content found in PDF. This might be a scanned document. Try OCR."] : undefined,
       };
     } catch (err: any) {
       throw new Error(`PDF conversion failed: ${err.message}`);
     }
+  }
+
+  async inspect(
+    input: Uint8Array | ReadableStream,
+    _from: FileFormat
+  ): Promise<Record<string, unknown>> {
+    let data: Uint8Array;
+    if (input instanceof Uint8Array) {
+      data = input;
+    } else {
+      const chunks: Uint8Array[] = [];
+      const reader = input.getReader();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) chunks.push(value);
+      }
+      data = new Uint8Array(chunks.reduce((acc, c) => acc + c.length, 0));
+      let offset = 0;
+      for (const c of chunks) {
+        data.set(c, offset);
+        offset += c.length;
+      }
+    }
+
+    const loadingTask = pdfjs.getDocument({ data });
+    const pdf = await loadingTask.promise;
+    const metadata = await pdf.getMetadata();
+
+    return {
+      pages: pdf.numPages,
+      info: metadata.info,
+      metadata: metadata.metadata?.getAll(),
+      version: pdf.fingerprints[0],
+    };
   }
 }

@@ -30,6 +30,8 @@ export type ConversionState = {
   output?: string; // base64
   format?: string;
   pipeline?: string[];
+  metadata?: Record<string, unknown>;
+  warnings?: string[];
 };
 
 export async function convertFile(formData: FormData): Promise<ConversionState> {
@@ -68,14 +70,22 @@ export async function convertFile(formData: FormData): Promise<ConversionState> 
     // 4. Convert
     const result = await converter.convert(inputData, { to: toFormat });
 
-    // 5. Return as base64
+    // 5. Inspect (Optional Metadata)
+    let metadata: Record<string, unknown> | undefined;
+    if (converter.inspect) {
+      metadata = await converter.inspect(result.data, toFormat);
+    }
+
+    // 6. Return as base64
     const base64 = Buffer.from(result.data as Uint8Array).toString("base64");
 
     return {
       success: true,
       output: `data:${toFormat.mimeTypes[0]};base64,${base64}`,
       format: toFormat.id,
-      pipeline: pipelineSteps
+      pipeline: pipelineSteps,
+      metadata,
+      warnings: result.warnings
     };
   } catch (err: unknown) {
     const error = err as Error;

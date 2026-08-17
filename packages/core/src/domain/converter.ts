@@ -60,4 +60,12 @@ export interface Converter {
     input: Uint8Array | ReadableStream,
     options: ConversionOptions
   ): Promise<ConversionResult>;
+
+  /**
+   * (Optional) Extracts technical metadata from the input file.
+   */
+  inspect?(
+    input: Uint8Array | ReadableStream,
+    from: FileFormat
+  ): Promise<Record<string, unknown>>;
 }

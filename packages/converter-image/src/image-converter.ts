@@ -80,4 +80,28 @@ export class ImageConverter implements Converter {
       format: targetFormat,
     };
   }
+
+  async inspect(
+    input: Uint8Array | ReadableStream,
+    _from: FileFormat
+  ): Promise<Record<string, unknown>> {
+    let pipeline = sharp();
+    if (input instanceof Uint8Array) {
+      pipeline = sharp(input);
+    } else {
+      const nodeReadable = Readable.fromWeb(input as any);
+      nodeReadable.pipe(pipeline);
+    }
+
+    const metadata = await pipeline.metadata();
+    return {
+      width: metadata.width,
+      height: metadata.height,
+      format: metadata.format,
+      space: metadata.space,
+      channels: metadata.channels,
+      depth: metadata.depth,
+      hasAlpha: metadata.hasAlpha,
+    };
+  }
 }

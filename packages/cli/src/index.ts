@@ -5,6 +5,7 @@ import cliProgress from "cli-progress";
 import { readFile, writeFile, mkdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { glob } from "glob";
+import { execa } from "execa";
 import {
   FormatDetector,
   ConverterRegistry,
@@ -164,6 +165,65 @@ program
     } catch (err: any) {
       console.error(chalk.red(`Error: ${err.message}`));
     }
+  });
+
+program
+  .command("inspect")
+  .description("Extract deep technical metadata from a file")
+  .argument("<path>", "File path to inspect")
+  .action(async (filePath) => {
+    try {
+      const data = new Uint8Array(await readFile(filePath));
+      const format = await detector.detect(data, { filename: filePath });
+
+      if (!format) {
+        console.error(chalk.red("Error: Could not identify format."));
+        process.exit(1);
+      }
+
+      console.log(chalk.bold(`\nFile: ${path.basename(filePath)}`));
+      console.log(`Format: ${chalk.green(format.name)} (${format.id})`);
+
+      // Find any converter that can inspect this format
+      const converters = registry.getConverters().filter(c =>
+        c.inspect && c.capabilities.some(cap => cap.from.id === format.id)
+      );
+
+      if (converters.length > 0) {
+        const metadata = await converters[0].inspect!(data, format);
+        console.log(chalk.bold("\nMetadata:"));
+        console.table(metadata);
+      } else {
+        console.log(chalk.dim("\nNo deep inspection available for this format."));
+      }
+    } catch (error: any) {
+      console.error(chalk.red(`Error: ${error.message}`));
+    }
+  });
+
+program
+  .command("doctor")
+  .description("Check system dependencies and health")
+  .action(async () => {
+    console.log(chalk.bold("\nConvertKit System Check\n"));
+
+    const checks = [
+      { name: "FFmpeg", cmd: ["ffmpeg", "-version"] },
+      { name: "LibreOffice", cmd: ["soffice", "--version"] },
+      { name: "Tesseract", cmd: ["tesseract", "--version"] },
+    ];
+
+    for (const check of checks) {
+      try {
+        await execa(check.cmd[0], check.cmd.slice(1));
+        console.log(`  ${chalk.green("\u2713")} ${chalk.bold(check.name.padEnd(12))} : Installed`);
+      } catch {
+        console.log(`  ${chalk.red("\u2717")} ${chalk.bold(check.name.padEnd(12))} : ${chalk.red("Not Found")}`);
+      }
+    }
+
+    console.log(`\n  Core Version : ${chalk.blue("0.1.0")}`);
+    console.log(`  CLI Version  : ${chalk.blue("0.1.0")}\n`);
   });
 
 program.parse();

@@ -247,6 +247,32 @@ export function ConversionHub({
                       </div>
                     )}
 
+                    {state.warnings && state.warnings.length > 0 && (
+                      <div className="flex flex-col gap-2 w-full mt-4 bg-orange-50 border border-orange-100 p-3 rounded-md">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-orange-600 flex items-center gap-1">
+                          <AlertCircle size={10} />
+                          Intelligence Note
+                        </span>
+                        {state.warnings.map((w, i) => (
+                          <p key={i} className="text-[10px] text-orange-700 leading-tight italic">{w}</p>
+                        ))}
+                      </div>
+                    )}
+
+                    {state.metadata && (
+                      <div className="flex flex-col gap-2 w-full mt-4">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted text-center">Technical Metadata</span>
+                        <div className="grid grid-cols-2 gap-2 text-[10px] font-mono bg-white border border-[#EAEAEA] p-3 rounded-md">
+                          {Object.entries(state.metadata).map(([key, val]) => (
+                            <div key={key} className="flex flex-col">
+                              <span className="text-muted lowercase">{key}</span>
+                              <span className="font-bold truncate">{String(val)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex gap-2">
                       <a
                         href={state.output}
