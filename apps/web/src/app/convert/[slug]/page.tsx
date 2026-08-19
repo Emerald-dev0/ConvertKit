@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Navigation } from "@/components/ui/navigation";
 import { Footer } from "@/components/ui/footer";
-import { ConversionCard } from "@/components/ui/conversion-card";
+import { ConversionWizard } from "@/components/conversion-wizard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getFormatById, getConversionLookup } from "@/lib/convertkit";
@@ -115,38 +115,10 @@ export default async function ConversionPage({ params }: PageProps) {
   const fromFormat = getFormatById(parsed.from);
   const toFormat = getFormatById(parsed.to);
 
-  // Mock formats for the converter - in production this would come from the registry
+  // Mock formats for the converter
   const formats = [
     { id: parsed.to, label: toFormat?.name || to, extension: to },
   ];
-
-  const handleConvert = async (file: File, targetFormat: string) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("targetFormat", targetFormat);
-
-    try {
-      const response = await fetch("/api/convert", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        return { success: false, error: error.error || "Conversion failed" };
-      }
-
-      const result = await response.json();
-      return {
-        success: true,
-        outputUrl: result.outputUrl,
-        outputFilename: result.outputFilename || `${file.name.split(".")[0]}.${targetFormat}`,
-        outputSize: result.outputSize || file.size,
-      };
-    } catch {
-      return { success: false, error: "Network error. Please try again." };
-    }
-  };
 
   return (
     <div className="min-h-screen bg-canvas">
@@ -182,9 +154,8 @@ export default async function ConversionPage({ params }: PageProps) {
 
           {/* Converter */}
           <div className="max-w-2xl mx-auto">
-            <ConversionCard
+            <ConversionWizard
               formats={formats}
-              onConvert={handleConvert}
             />
           </div>
 

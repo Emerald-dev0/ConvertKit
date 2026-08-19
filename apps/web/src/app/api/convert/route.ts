@@ -1,34 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  FormatDetector,
-  ConverterRegistry,
   FORMATS,
   PipelineConverter
 } from "@convertkit/core";
-import { ImageConverter } from "@convertkit/converter-image";
-import { PdfTextConverter } from "@convertkit/converter-pdf-text";
-import { CsvJsonConverter } from "@convertkit/converter-csv-json";
-import { MarkdownHtmlConverter } from "@convertkit/converter-markdown-html";
-import { OfficePdfConverter } from "@convertkit/converter-office-pdf";
-import { FfmpegConverter } from "@convertkit/converter-ffmpeg";
-import { TesseractOCRConverter } from "@convertkit/converter-ocr";
 
+import { registry, detector } from "@/lib/convertkit";
 import { getStorageProvider } from "@/lib/storage";
 import { db } from "@/lib/db";
-import { conversions } from "@/lib/db/schema";
+import { conversions, users } from "@/lib/db/schema";
 import { checkQuota } from "@/lib/entitlements";
 import { auth0 } from "@/lib/auth/auth0";
 import { randomUUID } from "node:crypto";
-
-const detector = new FormatDetector();
-const registry = new ConverterRegistry();
-registry.register(new ImageConverter());
-registry.register(new PdfTextConverter());
-registry.register(new CsvJsonConverter());
-registry.register(new MarkdownHtmlConverter());
-registry.register(new OfficePdfConverter());
-registry.register(new FfmpegConverter());
-registry.register(new TesseractOCRConverter());
 
 export async function POST(req: NextRequest) {
   const startTime = performance.now();
@@ -71,6 +53,20 @@ export async function POST(req: NextRequest) {
     const downloadUrl = await storage.getDownloadUrl(storageKey);
 
     // 5. Logging
+    // Ensure the anonymous "guest" user exists so the conversions FK never
+    // fails a real conversion over a bookkeeping insert.
+    if (!userId) {
+      await db
+        .insert(users)
+        .values({
+          id: "guest",
+          email: "guest@convertkit.local",
+          tier: "GUEST",
+          createdAt: new Date(),
+        })
+        .onConflictDoNothing()
+        .catch(() => {});
+    }
     const endTime = performance.now();
     await db.insert(conversions).values({
       id: conversionId,
@@ -93,8 +89,9 @@ export async function POST(req: NextRequest) {
       warnings: result.warnings
     });
 
-  } catch (err: any) {
-    console.error("API Conversion Error:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
+    console.error("API Conversion Error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -301,16 +301,14 @@ export const FORMATS = {
   ASS_SUB: { id: "ass", name: "Advanced Substation Alpha", extensions: [".ass", ".ssa"], mimeTypes: ["text/plain"], category: "subtitle" },
   SUB: { id: "sub", name: "MicroDVD Subtitle", extensions: [".sub"], mimeTypes: ["text/plain"], category: "subtitle" },
   SBV: { id: "sbv", name: "YouTube Subtitle", extensions: [".sbv"], mimeTypes: ["text/plain"], category: "subtitle" },
-  TTML: { id: "ttml", name: "Timed Text Markup Language", extensions: [".ttml", ".xml"], mimeTypes: ["application/ttml+xml"], category: "subtitle" },
+  TTML: { id: "ttml", name: "Timed Text Markup Language", extensions: [".ttml"], mimeTypes: ["application/ttml+xml"], category: "subtitle" },
   DFXP: { id: "dfxp", name: "Distribution Format Exchange Profile", extensions: [".dfxp"], mimeTypes: ["application/ttml+xml"], category: "subtitle" },
 
   // ═══════════════════════════════════════════════════════════════════════
   // 16. DATA / DEVELOPER FORMATS
   // ═══════════════════════════════════════════════════════════════════════
   INI: { id: "ini", name: "INI Configuration", extensions: [".ini"], mimeTypes: ["text/plain"], category: "data" },
-  MARKDOWN: { id: "markdown", name: "Markdown", extensions: [".markdown"], mimeTypes: ["text/markdown"], category: "data" },
   CSS: { id: "css", name: "Cascading Style Sheets", extensions: [".css"], mimeTypes: ["text/css"], category: "data" },
-  SVG_DATA: { id: "svg-data", name: "SVG (as data)", extensions: [".svg"], mimeTypes: ["image/svg+xml"], category: "data" },
 } as const satisfies Record<string, FileFormat>;
 
 /**

@@ -47,14 +47,14 @@ const formatCategories = [
     name: "Documents",
     icon: FileText,
     formats: ["PDF", "DOCX", "DOC", "TXT", "RTF", "ODT", "MD", "HTML", "EPUB"],
-    count: 26,
+    count: 25,
     description: "Transform documents between formats while preserving content.",
   },
   {
     name: "Images",
     icon: FileImage,
     formats: ["PNG", "JPG", "WEBP", "AVIF", "GIF", "SVG", "HEIC", "TIFF", "PSD"],
-    count: 27,
+    count: 26,
     description: "Convert images with quality control and format optimization.",
   },
   {

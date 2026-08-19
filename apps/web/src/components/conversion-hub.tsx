@@ -64,7 +64,7 @@ export function ConversionHub({
 
         const result = await response.json();
         setState(result);
-      } catch (err: any) {
+      } catch {
         setState({ error: "Network or platform error occurred." });
       }
     });
