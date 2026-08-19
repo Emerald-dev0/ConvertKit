@@ -4,7 +4,7 @@ import { ImageConverter } from '@convertkit/converter-image';
 import { PdfTextConverter } from '@convertkit/converter-pdf-text';
 import { CsvJsonConverter } from '@convertkit/converter-csv-json';
 import { MarkdownHtmlConverter } from '@convertkit/converter-markdown-html';
-import { OfficePdfConverter } from '@convertkit/converter-office-pdf';
+import { LibreOfficeConverter } from '@convertkit/converter-libreoffice';
 import { FfmpegConverter } from '@convertkit/converter-ffmpeg';
 import { TesseractOCRConverter } from '@convertkit/converter-ocr';
 
@@ -13,12 +13,12 @@ registry.register(new ImageConverter());
 registry.register(new PdfTextConverter());
 registry.register(new CsvJsonConverter());
 registry.register(new MarkdownHtmlConverter());
-registry.register(new OfficePdfConverter());
+registry.register(new LibreOfficeConverter());
 registry.register(new FfmpegConverter());
 registry.register(new TesseractOCRConverter());
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://convertkit.cloud'; // Target production domain
+  const baseUrl = 'https://convertkit.cloud';
   const routes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -26,11 +26,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 1,
     },
+    {
+      url: `${baseUrl}/formats`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
   ];
 
   const formats = Object.values(FORMATS);
 
-  // Generate a URL for every valid conversion path found by the registry
+  // Generate /formats/{id} pages for every format
+  for (const format of formats) {
+    routes.push({
+      url: `${baseUrl}/formats/${format.id}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    });
+  }
+
+  // Generate /convert/{from}-to-{to} pages for every valid conversion path
   for (const from of formats) {
     for (const to of formats) {
       if (from.id === to.id) continue;

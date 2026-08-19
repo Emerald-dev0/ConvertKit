@@ -46,32 +46,37 @@ const formatCategories = [
   {
     name: "Documents",
     icon: FileText,
-    formats: ["PDF", "DOCX", "TXT", "MD", "HTML"],
+    formats: ["PDF", "DOCX", "DOC", "TXT", "RTF", "ODT", "MD", "HTML", "EPUB"],
+    count: 26,
     description: "Transform documents between formats while preserving content.",
   },
   {
     name: "Images",
     icon: FileImage,
-    formats: ["PNG", "JPG", "WEBP", "GIF", "SVG"],
+    formats: ["PNG", "JPG", "WEBP", "AVIF", "GIF", "SVG", "HEIC", "TIFF", "PSD"],
+    count: 27,
     description: "Convert images with quality control and format optimization.",
   },
   {
     name: "Video",
     icon: Film,
-    formats: ["MP4", "MOV", "AVI", "MKV", "WEBM"],
+    formats: ["MP4", "MOV", "AVI", "MKV", "WEBM", "WMV", "FLV", "MPEG"],
+    count: 23,
     description: "Transcode video files with codec and quality options.",
   },
   {
     name: "Audio",
     icon: Music,
-    formats: ["MP3", "WAV", "AAC", "FLAC", "OGG"],
+    formats: ["MP3", "WAV", "FLAC", "AAC", "OGG", "OPUS", "M4A", "AIFF", "WMA"],
+    count: 25,
     description: "Convert audio formats with bitrate and quality settings.",
   },
   {
     name: "Data",
     icon: Database,
-    formats: ["CSV", "JSON", "XML", "TSV"],
-    description: "Transform structured data between common formats.",
+    formats: ["CSV", "JSON", "XML", "XLSX", "XLS", "TSV", "YAML", "SQL"],
+    count: 18,
+    description: "Transform structured data and spreadsheets between formats.",
   },
 ];
 
@@ -166,7 +171,7 @@ export default function HomePage() {
           </div>
 
           <p className="text-center text-sm text-ink-faint mt-6">
-            Supported formats: PDF, DOCX, PNG, JPG, WEBP, MP4, MP3, CSV, JSON, and more.
+            190+ formats supported: documents, images, video, audio, data, ebooks, fonts, 3D, and more.
           </p>
         </div>
       </section>

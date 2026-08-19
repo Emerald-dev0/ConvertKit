@@ -1,22 +1,15 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import {
-  FileText,
-  FileImage,
-  Film,
-  Music,
-  Database,
-  ArrowRight,
-} from "lucide-react";
 import { Navigation } from "@/components/ui/navigation";
 import { Footer } from "@/components/ui/footer";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { getFormatEntries, getConversionLookup } from "@/lib/convertkit";
 
 export const metadata: Metadata = {
   title: "Supported Formats | ConvertKit",
   description:
-    "Browse all file formats supported by ConvertKit. Documents, images, video, audio, and data formats.",
+    "Browse all file formats supported by ConvertKit. Documents, images, video, audio, data, ebooks, and more.",
 };
 
 const navItems = [
@@ -26,72 +19,40 @@ const navItems = [
   { label: "Pricing", href: "/pricing" },
 ];
 
-const formatCategories = [
-  {
-    name: "Documents",
-    icon: FileText,
-    description: "Transform documents between formats while preserving content.",
-    formats: [
-      { id: "pdf", name: "PDF", description: "Portable Document Format" },
-      { id: "docx", name: "DOCX", description: "Microsoft Word Document" },
-      { id: "txt", name: "TXT", description: "Plain Text" },
-      { id: "md", name: "MD", description: "Markdown" },
-      { id: "html", name: "HTML", description: "HyperText Markup Language" },
-      { id: "pptx", name: "PPTX", description: "PowerPoint Presentation" },
-      { id: "xlsx", name: "XLSX", description: "Excel Spreadsheet" },
-    ],
-  },
-  {
-    name: "Images",
-    icon: FileImage,
-    description: "Convert images with quality control and format optimization.",
-    formats: [
-      { id: "png", name: "PNG", description: "Portable Network Graphics" },
-      { id: "jpg", name: "JPG", description: "JPEG Image" },
-      { id: "jpeg", name: "JPEG", description: "Joint Photographic Experts Group" },
-      { id: "webp", name: "WEBP", description: "WebP Image" },
-      { id: "gif", name: "GIF", description: "Graphics Interchange Format" },
-      { id: "svg", name: "SVG", description: "Scalable Vector Graphics" },
-    ],
-  },
-  {
-    name: "Video",
-    icon: Film,
-    description: "Transcode video files with codec and quality options.",
-    formats: [
-      { id: "mp4", name: "MP4", description: "MPEG-4 Part 14" },
-      { id: "mov", name: "MOV", description: "QuickTime Movie" },
-      { id: "avi", name: "AVI", description: "Audio Video Interleave" },
-      { id: "mkv", name: "MKV", description: "Matroska Video" },
-      { id: "webm", name: "WEBM", description: "WebM Video" },
-    ],
-  },
-  {
-    name: "Audio",
-    icon: Music,
-    description: "Convert audio formats with bitrate and quality settings.",
-    formats: [
-      { id: "mp3", name: "MP3", description: "MPEG Audio Layer III" },
-      { id: "wav", name: "WAV", description: "Waveform Audio File" },
-      { id: "aac", name: "AAC", description: "Advanced Audio Coding" },
-      { id: "flac", name: "FLAC", description: "Free Lossless Audio Codec" },
-      { id: "ogg", name: "OGG", description: "Ogg Vorbis" },
-    ],
-  },
-  {
-    name: "Data",
-    icon: Database,
-    description: "Transform structured data between common formats.",
-    formats: [
-      { id: "csv", name: "CSV", description: "Comma-Separated Values" },
-      { id: "json", name: "JSON", description: "JavaScript Object Notation" },
-      { id: "xml", name: "XML", description: "Extensible Markup Language" },
-      { id: "tsv", name: "TSV", description: "Tab-Separated Values" },
-    ],
-  },
+const CATEGORY_META: Record<string, { icon: string; description: string }> = {
+  document: { icon: "📄", description: "Transform documents between formats while preserving content." },
+  data: { icon: "📊", description: "Convert spreadsheets and structured data between common formats." },
+  presentation: { icon: "📽️", description: "Convert presentations and slide decks." },
+  image: { icon: "🖼️", description: "Convert images with quality control and format optimization." },
+  raw: { icon: "📷", description: "Process camera RAW files from major manufacturers." },
+  video: { icon: "🎬", description: "Transcode video files with codec and quality options." },
+  audio: { icon: "🎵", description: "Convert audio formats with bitrate and quality settings." },
+  ebook: { icon: "📚", description: "Convert ebooks between reader formats." },
+  archive: { icon: "📦", description: "Convert between archive and compression formats." },
+  font: { icon: "🔤", description: "Convert fonts between web and desktop formats." },
+  vector: { icon: "✏️", description: "Convert vector graphics between design formats." },
+  cad: { icon: "📐", description: "Convert CAD and technical drawing formats." },
+  "3d": { icon: "🧊", description: "Convert 3D model and scene formats." },
+  scientific: { icon: "🔬", description: "Convert scientific and medical image formats." },
+  subtitle: { icon: "💬", description: "Convert subtitle and caption formats." },
+};
+
+const CATEGORY_ORDER = [
+  "document", "data", "presentation", "image", "raw", "video", "audio",
+  "ebook", "archive", "font", "vector", "cad", "3d", "scientific", "subtitle",
 ];
 
 export default function FormatsPage() {
+  const allFormats = getFormatEntries();
+  const conversionLookup = getConversionLookup();
+
+  const grouped = new Map<string, typeof allFormats>();
+  for (const format of allFormats) {
+    const cat = format.category || "other";
+    if (!grouped.has(cat)) grouped.set(cat, []);
+    grouped.get(cat)!.push(format);
+  }
+
   return (
     <div className="min-h-screen bg-canvas">
       <Navigation items={navItems} showAuth={true} />
@@ -101,63 +62,69 @@ export default function FormatsPage() {
           {/* Header */}
           <div className="text-center mb-12">
             <Badge variant="accent" className="mb-4">
-              All formats
+              {allFormats.length}+ formats
             </Badge>
             <h1 className="text-4xl md:text-5xl font-display font-semibold text-ink tracking-tight">
               Supported formats
             </h1>
             <p className="mt-4 text-lg text-ink-muted max-w-2xl mx-auto">
-              Convert between documents, images, video, audio, and data formats.
-              All conversions are free, fast, and private.
+              Browse every format ConvertKit can read, write, and convert between.
             </p>
           </div>
 
-          {/* Format categories */}
+          {/* Categories */}
           <div className="space-y-12">
-            {formatCategories.map((category) => (
-              <section key={category.name}>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-lg bg-accent-50 flex items-center justify-center">
-                    <category.icon className="w-5 h-5 text-accent-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-display font-semibold text-ink">
-                      {category.name}
-                    </h2>
-                    <p className="text-sm text-ink-muted">
-                      {category.description}
-                    </p>
-                  </div>
-                </div>
+            {CATEGORY_ORDER.map((cat) => {
+              const formats = grouped.get(cat);
+              if (!formats || formats.length === 0) return null;
+              const meta = CATEGORY_META[cat] || { icon: "📁", description: "" };
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {category.formats.map((format) => (
-                    <Link
-                      key={format.id}
-                      href={`/formats/${format.id}`}
-                      className="group"
-                    >
-                      <Card className="h-full hover:shadow-medium transition-all group-hover:border-accent-200">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono text-lg font-semibold text-accent-600">
-                                {format.name}
-                              </span>
-                              <Badge variant="default">.{format.id}</Badge>
+              return (
+                <section key={cat}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-2xl">{meta.icon}</span>
+                    <div>
+                      <h2 className="text-xl font-display font-semibold text-ink capitalize">
+                        {cat === "3d" ? "3D Models" : cat}
+                      </h2>
+                      <p className="text-sm text-ink-muted">{meta.description}</p>
+                    </div>
+                    <Badge variant="default" className="ml-auto">
+                      {formats.length} formats
+                    </Badge>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {formats.map((format) => {
+                      const targets = conversionLookup[format.id] || [];
+                      const targetCount = targets.length;
+
+                      return (
+                        <Link key={format.id} href={`/formats/${format.id}`}>
+                          <Card className="hover:shadow-medium transition-shadow h-full">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <h3 className="font-semibold text-ink">
+                                  {format.name}
+                                </h3>
+                                <p className="text-xs text-ink-faint font-mono mt-1">
+                                  {format.extensions.join(", ")}
+                                </p>
+                              </div>
+                              {targetCount > 0 && (
+                                <Badge variant="accent" className="text-[10px]">
+                                  {targetCount} conversions
+                                </Badge>
+                              )}
                             </div>
-                            <p className="text-sm text-ink-muted mt-1">
-                              {format.description}
-                            </p>
-                          </div>
-                          <ArrowRight className="w-4 h-4 text-ink-faint group-hover:text-accent-600 transition-colors" />
-                        </div>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            ))}
+                          </Card>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })}
           </div>
         </div>
       </main>

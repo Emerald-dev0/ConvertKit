@@ -7,7 +7,7 @@ import { Footer } from "@/components/ui/footer";
 import { ConversionCard } from "@/components/ui/conversion-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getFormatById } from "@/lib/convertkit";
+import { getFormatById, getConversionLookup } from "@/lib/convertkit";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -25,6 +25,72 @@ const navItems = [
   { label: "Developers", href: "/developers" },
   { label: "Pricing", href: "/pricing" },
 ];
+
+function RelatedConversions({ fromId, toId }: { fromId: string; toId: string }) {
+  const conversionLookup = getConversionLookup();
+
+  // Gather related pairs: other conversions from the same source + other conversions to the same target
+  const related: { from: string; to: string }[] = [];
+  const seen = new Set<string>();
+
+  // Other conversions from this source format
+  const sourceTargets = conversionLookup[fromId] || [];
+  for (const target of sourceTargets) {
+    if (target.to === toId) continue;
+    const key = `${fromId}-${target.to}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      related.push({ from: fromId, to: target.to });
+    }
+  }
+
+  // Other conversions that can reach this target format
+  for (const [srcId, targets] of Object.entries(conversionLookup)) {
+    if (srcId === fromId) continue;
+    if (targets.some((t) => t.to === toId)) {
+      const key = `${srcId}-${toId}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        related.push({ from: srcId, to: toId });
+      }
+    }
+  }
+
+  // If still few, add some popular conversions from the lookup
+  if (related.length < 6) {
+    const popularPairs: [string, string][] = [
+      ["pdf", "docx"], ["png", "jpg"], ["jpg", "webp"], ["csv", "json"],
+      ["mp4", "mp3"], ["xlsx", "pdf"], ["docx", "pdf"], ["md", "html"],
+    ];
+    for (const [from, to] of popularPairs) {
+      if (from === fromId && to === toId) continue;
+      const key = `${from}-${to}`;
+      if (!seen.has(key) && conversionLookup[from]?.some((t) => t.to === to)) {
+        seen.add(key);
+        related.push({ from, to });
+      }
+    }
+  }
+
+  if (related.length === 0) return null;
+
+  return (
+    <section className="mt-16 md:mt-24">
+      <h2 className="text-2xl font-display font-semibold text-ink text-center mb-8">
+        Other conversions
+      </h2>
+      <div className="flex flex-wrap justify-center gap-3">
+        {related.slice(0, 12).map(({ from, to }) => (
+          <Link key={`${from}-${to}`} href={`/convert/${from}-to-${to}`}>
+            <Button variant="secondary" size="sm">
+              {from.toUpperCase()} → {to.toUpperCase()}
+            </Button>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -160,36 +226,8 @@ export default async function ConversionPage({ params }: PageProps) {
             </div>
           </section>
 
-          {/* Related conversions */}
-          <section className="mt-16 md:mt-24">
-            <h2 className="text-2xl font-display font-semibold text-ink text-center mb-8">
-              Other conversions
-            </h2>
-            <div className="flex flex-wrap justify-center gap-3">
-              {[
-                ["pdf", "docx"],
-                ["png", "jpg"],
-                ["jpg", "webp"],
-                ["csv", "json"],
-                ["md", "html"],
-                ["mp4", "mp3"],
-              ]
-                .filter(
-                  ([from, to]) =>
-                    !(from === parsed.from && to === parsed.to)
-                )
-                .map(([from, to]) => (
-                  <Link
-                    key={`${from}-${to}`}
-                    href={`/convert/${from}-to-${to}`}
-                  >
-                    <Button variant="secondary" size="sm">
-                      {from.toUpperCase()} → {to.toUpperCase()}
-                    </Button>
-                  </Link>
-                ))}
-            </div>
-          </section>
+          {/* Related conversions — derived from the real registry */}
+          <RelatedConversions fromId={parsed.from} toId={parsed.to} />
 
           {/* Privacy note */}
           <section className="mt-16 md:mt-24 p-6 bg-surface border border-rule rounded-xl">
