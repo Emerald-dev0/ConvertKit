@@ -111,7 +111,7 @@ export default function WebhooksPage() {
                   </div>
                   <div className="flex gap-2 mt-2">
                     {webhook.events.map((event) => (
-                      <Badge key={event} variant="outline">
+                      <Badge key={event} variant="default">
                         {event}
                       </Badge>
                     ))}

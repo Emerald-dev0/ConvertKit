@@ -54,21 +54,37 @@ export default async function ConversionPage({ params }: PageProps) {
     { id: parsed.to, label: toFormat?.name || to, extension: to },
   ];
 
-  // Mock conversion handler
   const handleConvert = async (file: File, targetFormat: string) => {
-    // In production this would call /api/convert
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    return {
-      success: true,
-      outputUrl: "#",
-      outputFilename: `${file.name.split(".")[0]}.${targetFormat}`,
-      outputSize: file.size,
-    };
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("targetFormat", targetFormat);
+
+    try {
+      const response = await fetch("/api/convert", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        return { success: false, error: error.error || "Conversion failed" };
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        outputUrl: result.outputUrl,
+        outputFilename: result.outputFilename || `${file.name.split(".")[0]}.${targetFormat}`,
+        outputSize: result.outputSize || file.size,
+      };
+    } catch {
+      return { success: false, error: "Network error. Please try again." };
+    }
   };
 
   return (
     <div className="min-h-screen bg-canvas">
-      <Navigation items={navItems} />
+      <Navigation items={navItems} showAuth={true} />
 
       <main className="py-12 md:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

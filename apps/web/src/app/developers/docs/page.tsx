@@ -1,4 +1,4 @@
-import { BookOpen, Search, ChevronRight } from "lucide-react";
+import { Search, ChevronRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 const docsSections = [

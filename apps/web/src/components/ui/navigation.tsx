@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X, LogIn, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 
@@ -16,6 +16,7 @@ export interface NavigationProps {
   items: NavItem[];
   logo?: React.ReactNode;
   cta?: React.ReactNode;
+  showAuth?: boolean;
   className?: string;
 }
 
@@ -23,6 +24,7 @@ export function Navigation({
   items,
   logo,
   cta,
+  showAuth = true,
   className,
 }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,15 +61,24 @@ export function Navigation({
           </div>
 
           {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-4">
-            {cta || (
-              <Link href="/convert">
-                <Button variant="primary" size="sm">
-                  Convert a file
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
+          <div className="hidden md:flex items-center gap-3">
+            {showAuth && (
+              <>
+                <Link href="/sign-in">
+                  <Button variant="ghost" size="sm">
+                    <LogIn className="w-4 h-4" />
+                    Sign in
+                  </Button>
+                </Link>
+                <Link href="/sign-up">
+                  <Button variant="primary" size="sm">
+                    <UserPlus className="w-4 h-4" />
+                    Sign up
+                  </Button>
+                </Link>
+              </>
             )}
+            {cta}
           </div>
 
           {/* Mobile menu button */}
@@ -97,13 +108,23 @@ export function Navigation({
                   {item.label}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-rule">
-                <Link href="/convert" onClick={() => setIsOpen(false)}>
-                  <Button variant="primary" className="w-full">
-                    Convert a file
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </Link>
+              <div className="pt-4 border-t border-rule space-y-2">
+                {showAuth && (
+                  <>
+                    <Link href="/sign-in" onClick={() => setIsOpen(false)}>
+                      <Button variant="ghost" className="w-full">
+                        <LogIn className="w-4 h-4" />
+                        Sign in
+                      </Button>
+                    </Link>
+                    <Link href="/sign-up" onClick={() => setIsOpen(false)}>
+                      <Button variant="primary" className="w-full">
+                        <UserPlus className="w-4 h-4" />
+                        Sign up free
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>

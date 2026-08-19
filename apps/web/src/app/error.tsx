@@ -27,7 +27,7 @@ export default function Error({
 
   return (
     <div className="min-h-screen bg-canvas">
-      <Navigation items={navItems} />
+      <Navigation items={navItems} showAuth={true} />
 
       <main className="flex flex-col items-center justify-center px-4 py-16 md:py-24">
         <div className="max-w-lg text-center">

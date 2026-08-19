@@ -21,7 +21,7 @@ const navItems = [
 export default function SignInPage() {
   return (
     <div className="min-h-screen bg-canvas">
-      <Navigation items={navItems} />
+      <Navigation items={navItems} showAuth={false} />
 
       <main className="flex flex-col items-center justify-center px-4 py-16 md:py-24">
         <div className="w-full max-w-md">

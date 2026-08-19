@@ -1,7 +1,5 @@
 import { BarChart3, TrendingUp, FileText, CheckCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { EmptyState } from "@/components/ui/empty-state";
 
 export default function UsagePage() {
   // Mock data

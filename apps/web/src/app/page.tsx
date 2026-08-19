@@ -12,6 +12,8 @@ import {
   Zap,
   Shield,
   Globe,
+  Check,
+  Crown,
 } from "lucide-react";
 import { Navigation } from "@/components/ui/navigation";
 import { Footer } from "@/components/ui/footer";
@@ -21,7 +23,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import type { FormatOption } from "@/components/ui/format-selector";
 
-// Example formats - in production this would come from the registry
 const exampleFormats: FormatOption[] = [
   { id: "pdf", label: "PDF Document", extension: "pdf" },
   { id: "docx", label: "Word Document", extension: "docx" },
@@ -92,23 +93,53 @@ const features = [
   },
 ];
 
-export default function HomePage() {
-  // Mock conversion handler - in production this would call /api/convert
-  const handleConvert = async (file: File, targetFormat: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+const proFeatures = [
+  "No ads, no interruptions",
+  "50 MB file size limit",
+  "Unlimited conversions per day",
+  "Conversion history & saved workflows",
+  "Batch conversion support",
+  "Priority processing",
+];
 
-    return {
-      success: true,
-      outputUrl: "#",
-      outputFilename: `${file.name.split(".")[0]}.${targetFormat}`,
-      outputSize: file.size,
-    };
+export default function HomePage() {
+  const handleConvert = async (file: File, targetFormat: string) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("targetFormat", targetFormat);
+
+    try {
+      const response = await fetch("/api/convert", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error.error || "Conversion failed",
+        };
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        outputUrl: result.outputUrl,
+        outputFilename: result.outputFilename || `${file.name.split(".")[0]}.${targetFormat}`,
+        outputSize: result.outputSize || file.size,
+      };
+    } catch {
+      return {
+        success: false,
+        error: "Network error. Please try again.",
+      };
+    }
   };
 
   return (
     <div className="min-h-screen bg-canvas">
-      <Navigation items={navItems} />
+      <Navigation items={navItems} showAuth={true} />
 
       {/* Hero Section */}
       <section className="relative py-16 md:py-24">
@@ -212,7 +243,7 @@ export default function HomePage() {
                 No black boxes, no vendor lock-in.
               </p>
               <div className="flex items-center gap-4 mt-8">
-                <Link href="https://github.com/your-org/convertkit" target="_blank">
+                <Link href="https://github.com/Emerald-dev0/ConvertKit" target="_blank">
                   <Button variant="secondary">
                     <Github className="w-4 h-4" />
                     View on GitHub
@@ -243,14 +274,66 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Pro Upsell Section */}
       <section className="py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-br from-accent-50 to-surface border border-accent-100 rounded-3xl p-8 md:p-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Crown className="w-5 h-5 text-accent-600" />
+                  <Badge variant="accent">Pro</Badge>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-display font-semibold text-ink">
+                  Need more power?
+                </h2>
+                <p className="mt-4 text-lg text-ink-muted">
+                  Upgrade to Pro for unlimited conversions, larger files, and a
+                  cleaner experience without ads.
+                </p>
+                <div className="flex items-center gap-4 mt-8">
+                  <Link href="/sign-up">
+                    <Button size="lg">
+                      Get started free
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                  <Link href="/pricing">
+                    <Button variant="secondary" size="lg">
+                      Compare plans
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {proFeatures.map((feature) => (
+                  <div key={feature} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-accent-100 flex items-center justify-center flex-shrink-0">
+                      <Check className="w-3.5 h-3.5 text-accent-600" />
+                    </div>
+                    <span className="text-ink">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 md:py-24 bg-surface border-y border-rule">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-display font-semibold text-ink">
             Ready to convert?
           </h2>
           <p className="mt-4 text-lg text-ink-muted max-w-xl mx-auto">
             Start converting files for free. No signup required.
+            <br />
+            <Link href="/sign-up" className="text-accent-600 hover:text-accent-700 font-medium">
+              Create an account
+            </Link>{" "}
+            to save history and unlock more features.
           </p>
           <div className="flex items-center justify-center gap-4 mt-8">
             <Link href="/convert">
@@ -259,9 +342,9 @@ export default function HomePage() {
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
-            <Link href="/developers">
+            <Link href="/sign-up">
               <Button variant="secondary" size="lg">
-                Explore the API
+                Sign up free
               </Button>
             </Link>
           </div>

@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Play, Copy, Check } from "lucide-react";
+import { Play, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 export default function PlaygroundPage() {
   const [method, setMethod] = useState("POST");

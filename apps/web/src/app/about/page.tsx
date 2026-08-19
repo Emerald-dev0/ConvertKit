@@ -49,7 +49,7 @@ const values = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-canvas">
-      <Navigation items={navItems} />
+      <Navigation items={navItems} showAuth={true} />
 
       <main className="py-12 md:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
