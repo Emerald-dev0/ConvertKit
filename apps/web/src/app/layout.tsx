@@ -36,7 +36,15 @@ export default function RootLayout({
         <body
           className={`${newsreader.variable} ${dmSans.variable} ${jetbrainsMono.variable} font-sans antialiased bg-canvas text-ink`}
         >
-          {children}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-4 focus:left-4 focus:bg-accent-500 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-medium"
+          >
+            Skip to content
+          </a>
+          <div id="main-content">
+            {children}
+          </div>
         </body>
       </Auth0Provider>
     </html>

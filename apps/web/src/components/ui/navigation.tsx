@@ -84,7 +84,10 @@ export function Navigation({
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-warm transition-colors"
+            className="md:hidden p-2 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-warm transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
           >
             {isOpen ? (
               <X className="w-5 h-5" />
@@ -96,7 +99,7 @@ export function Navigation({
 
         {/* Mobile menu */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-rule">
+          <div id="mobile-menu" className="md:hidden py-4 border-t border-rule">
             <div className="flex flex-col gap-2">
               {items.map((item) => (
                 <Link

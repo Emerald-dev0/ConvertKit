@@ -42,7 +42,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-1" aria-label="Workspace navigation">
         {sidebarItems.map((item) => {
           const isActive =
             item.href === "/app"
@@ -85,7 +85,10 @@ export function Sidebar() {
           </Link>
         ))}
 
-        <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-ink-muted hover:text-ink hover:bg-canvas-warm transition-colors">
+        <button
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-ink-muted hover:text-ink hover:bg-canvas-warm transition-colors"
+          aria-label="Sign out of your account"
+        >
           <LogOut className="w-5 h-5" />
           Sign out
         </button>

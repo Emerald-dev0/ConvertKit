@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useRef, type DragEvent } from "react";
+import { useCallback, useState, useRef, type DragEvent, type KeyboardEvent } from "react";
 import { Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -70,6 +70,17 @@ export function FileDropzone({
     [multiple, onFilesSelected]
   );
 
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (disabled) return;
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        inputRef.current?.click();
+      }
+    },
+    [disabled]
+  );
+
   return (
     <div
       onDragEnter={handleDragIn}
@@ -77,8 +88,12 @@ export function FileDropzone({
       onDragOver={handleDrag}
       onDrop={handleDrop}
       onClick={() => !disabled && inputRef.current?.click()}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      aria-label="Upload a file by dropping it here or pressing Enter to browse"
       className={cn(
-        "relative flex flex-col items-center justify-center gap-4 p-12 border-2 border-dashed rounded-xl transition-all cursor-pointer",
+        "relative flex flex-col items-center justify-center gap-4 p-6 sm:p-12 border-2 border-dashed rounded-xl transition-all cursor-pointer",
         isDragging
           ? "border-accent-500 bg-accent-50"
           : "border-rule hover:border-accent-300 hover:bg-canvas-warm",
@@ -94,6 +109,8 @@ export function FileDropzone({
         onChange={handleFileInput}
         className="hidden"
         disabled={disabled}
+        aria-hidden="true"
+        tabIndex={-1}
       />
 
       <div

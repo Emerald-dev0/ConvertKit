@@ -70,7 +70,8 @@ export function FileCard({ file, onRemove, className }: FileCardProps) {
             e.stopPropagation();
             onRemove();
           }}
-          className="p-1.5 rounded-lg text-ink-faint hover:text-ink hover:bg-canvas-warm transition-colors"
+          className="p-1.5 rounded-lg text-ink-faint hover:text-ink hover:bg-canvas-warm transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
+          aria-label={`Remove ${file.name}`}
         >
           <X className="w-4 h-4" />
         </button>

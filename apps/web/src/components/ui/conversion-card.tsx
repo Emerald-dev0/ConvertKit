@@ -162,7 +162,7 @@ export function ConversionCard({
 
         {/* State: Converting - Show progress */}
         {state === "converting" && file && (
-          <div className="space-y-4">
+          <div className="space-y-4" role="status" aria-live="polite">
             <FileCard file={file} />
 
             <div className="flex items-center gap-3 p-4 bg-accent-50 rounded-xl">
@@ -219,7 +219,7 @@ export function ConversionCard({
 
         {/* State: Failed - Show error */}
         {state === "failed" && (
-          <div className="space-y-4">
+          <div className="space-y-4" role="alert" aria-live="assertive">
             <div className="flex items-center gap-3 p-4 bg-danger-bg rounded-xl">
               <XCircle className="w-5 h-5 text-danger" />
               <div>

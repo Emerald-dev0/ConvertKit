@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,18 +30,49 @@ export function FormatSelector({
 }: FormatSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selected = formats.find((f) => f.id === value);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleClose = useCallback(() => setIsOpen(false), []);
+
+  // Close on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, handleClose]);
+
+  // Close on click outside
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        handleClose();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen, handleClose]);
 
   return (
-    <div className={cn("space-y-1.5", className)}>
-      <label className="block text-sm font-medium text-ink-light">{label}</label>
+    <div className={cn("space-y-1.5", className)} ref={containerRef}>
+      <label className="block text-sm font-medium text-ink-light" id="format-selector-label">{label}</label>
 
       <div className="relative">
         <button
           type="button"
           onClick={() => !disabled && setIsOpen(!isOpen)}
           disabled={disabled}
+          role="combobox"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-labelledby="format-selector-label"
           className={cn(
-            "w-full flex items-center justify-between gap-3 px-4 py-3 bg-surface border border-rule rounded-lg text-left transition-all",
+            "w-full flex items-center justify-between gap-3 px-4 py-3 bg-surface border border-rule rounded-lg text-left transition-all min-h-[44px]",
             "hover:border-rule-dark focus:border-accent-500 focus:ring-2 focus:ring-accent-100 focus:outline-none",
             disabled && "opacity-50 cursor-not-allowed",
             isOpen && "border-accent-500 ring-2 ring-accent-100"
@@ -66,12 +97,14 @@ export function FormatSelector({
         </button>
 
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-surface border border-rule rounded-lg shadow-large overflow-hidden">
+          <div className="absolute z-50 w-full mt-1 bg-surface border border-rule rounded-lg shadow-large overflow-hidden" role="listbox" aria-labelledby="format-selector-label">
             <div className="max-h-64 overflow-y-auto">
               {formats.map((format) => (
                 <button
                   key={format.id}
                   type="button"
+                  role="option"
+                  aria-selected={format.id === value}
                   onClick={() => {
                     onChange(format.id);
                     setIsOpen(false);
