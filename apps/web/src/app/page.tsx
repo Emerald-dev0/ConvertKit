@@ -1,190 +1,274 @@
-import { ConversionHub } from "@/components/conversion-hub";
-import { ToolLink } from "@/components/tool-link";
-import { Nav } from "@/components/nav";
-import {
-  ShieldCheck,
-  Zap,
-  Lock,
-  FileStack,
-} from "lucide-react";
-import Link from "next/link";
+"use client";
 
-export default function Home() {
+import Link from "next/link";
+import {
+  ArrowRight,
+  FileImage,
+  FileText,
+  Film,
+  Music,
+  Database,
+  Github,
+  Zap,
+  Shield,
+  Globe,
+} from "lucide-react";
+import { Navigation } from "@/components/ui/navigation";
+import { Footer } from "@/components/ui/footer";
+import { ConversionCard } from "@/components/ui/conversion-card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import type { FormatOption } from "@/components/ui/format-selector";
+
+// Example formats - in production this would come from the registry
+const exampleFormats: FormatOption[] = [
+  { id: "pdf", label: "PDF Document", extension: "pdf" },
+  { id: "docx", label: "Word Document", extension: "docx" },
+  { id: "png", label: "PNG Image", extension: "png" },
+  { id: "jpg", label: "JPEG Image", extension: "jpg" },
+  { id: "webp", label: "WebP Image", extension: "webp" },
+  { id: "mp4", label: "MP4 Video", extension: "mp4" },
+  { id: "mp3", label: "MP3 Audio", extension: "mp3" },
+  { id: "csv", label: "CSV Data", extension: "csv" },
+  { id: "json", label: "JSON Data", extension: "json" },
+];
+
+const navItems = [
+  { label: "Convert", href: "/convert" },
+  { label: "Formats", href: "/formats" },
+  { label: "Developers", href: "/developers" },
+  { label: "Pricing", href: "/pricing" },
+];
+
+const formatCategories = [
+  {
+    name: "Documents",
+    icon: FileText,
+    formats: ["PDF", "DOCX", "TXT", "MD", "HTML"],
+    description: "Transform documents between formats while preserving content.",
+  },
+  {
+    name: "Images",
+    icon: FileImage,
+    formats: ["PNG", "JPG", "WEBP", "GIF", "SVG"],
+    description: "Convert images with quality control and format optimization.",
+  },
+  {
+    name: "Video",
+    icon: Film,
+    formats: ["MP4", "MOV", "AVI", "MKV", "WEBM"],
+    description: "Transcode video files with codec and quality options.",
+  },
+  {
+    name: "Audio",
+    icon: Music,
+    formats: ["MP3", "WAV", "AAC", "FLAC", "OGG"],
+    description: "Convert audio formats with bitrate and quality settings.",
+  },
+  {
+    name: "Data",
+    icon: Database,
+    formats: ["CSV", "JSON", "XML", "TSV"],
+    description: "Transform structured data between common formats.",
+  },
+];
+
+const features = [
+  {
+    icon: Zap,
+    title: "Fast conversions",
+    description: "Built on optimized engines for quick, reliable file transformation.",
+  },
+  {
+    icon: Shield,
+    title: "Private by default",
+    description: "Files are processed locally. No uploads to external servers.",
+  },
+  {
+    icon: Globe,
+    title: "Works everywhere",
+    description: "Use in the browser, via CLI, or integrate with your application.",
+  },
+];
+
+export default function HomePage() {
+  // Mock conversion handler - in production this would call /api/convert
+  const handleConvert = async (file: File, targetFormat: string) => {
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    return {
+      success: true,
+      outputUrl: "#",
+      outputFilename: `${file.name.split(".")[0]}.${targetFormat}`,
+      outputSize: file.size,
+    };
+  };
+
   return (
-    <div className="min-h-screen bg-[#F7F6F3]">
-      <Nav />
+    <div className="min-h-screen bg-canvas">
+      <Navigation items={navItems} />
 
       {/* Hero Section */}
-      <section className="pt-40 pb-24 px-6">
-        <ConversionHub />
-      </section>
-
-      {/* Trust Bar */}
-      <div className="max-w-4xl mx-auto border-y border-[#EAEAEA] py-8 flex flex-wrap justify-center gap-12 grayscale opacity-50">
-         <span className="font-mono uppercase tracking-widest text-xs">PDF.js</span>
-         <span className="font-mono uppercase tracking-widest text-xs">Sharp</span>
-         <span className="font-mono uppercase tracking-widest text-xs">FFmpeg</span>
-         <span className="font-mono uppercase tracking-widest text-xs">Tesseract</span>
-         <span className="font-mono uppercase tracking-widest text-xs">LibreOffice</span>
-      </div>
-
-      {/* Features Section */}
-      <section id="features" className="py-32 px-6 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">Built for Reliability.</h2>
-            <p className="text-muted text-lg max-w-2xl mx-auto">
-              ConvertKit is not just another website. It is an industrial-grade orchestration layer
-              built on the world\u0027s most trusted conversion engines.
+      <section className="relative py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <Badge variant="accent" className="mb-4">
+              Free &middot; No signup required
+            </Badge>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-ink tracking-tight">
+              Convert anything.
+            </h1>
+            <p className="mt-4 text-lg text-ink-muted max-w-2xl mx-auto">
+              Turn documents, images, video, audio and data into the formats you need.
+              Fast, private, and free for basic use.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <FeatureCard
-              icon={<Lock className="text-blue-600" />}
-              title="Local-First Security"
-              description="All conversions run on your infrastructure. No file ever leaves your environment, ensuring 100% privacy."
-            />
-            <FeatureCard
-              icon={<Zap className="text-orange-600" />}
-              title="Intelligent Pathfinding"
-              description="Our BFS-based engine automatically chains converters to solve complex multi-step transformations."
-            />
-            <FeatureCard
-              icon={<ShieldCheck className="text-green-600" />}
-              title="Deterministic Output"
-              description="Built on standard-compliant engines like FFmpeg and PDF.js, ensuring predictable, high-fidelity results."
+          {/* Converter in the hero */}
+          <div className="max-w-2xl mx-auto">
+            <ConversionCard
+              formats={exampleFormats}
+              onConvert={handleConvert}
             />
           </div>
+
+          <p className="text-center text-sm text-ink-faint mt-6">
+            Supported formats: PDF, DOCX, PNG, JPG, WEBP, MP4, MP3, CSV, JSON, and more.
+          </p>
         </div>
       </section>
 
-      {/* Conversion Hub / SEO Grid */}
-      <section id="conversions" className="py-32 px-6 bg-[#FBFBFA]">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-display font-bold mb-12 border-b border-[#EAEAEA] pb-6 flex items-center gap-3">
-            <FileStack className="text-primary" />
-            Conversion Utilities
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <ToolLink from="pdf" to="txt" />
-            <ToolLink from="png" to="jpg" />
-            <ToolLink from="jpg" to="webp" />
-            <ToolLink from="md" to="html" />
-            <ToolLink from="csv" to="json" />
-            <ToolLink from="xlsx" to="pdf" />
-            <ToolLink from="docx" to="pdf" />
-            <ToolLink from="mp3" to="mp4" />
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section (Shell) */}
-      <section id="pricing" className="py-32 px-6 bg-white border-t border-[#EAEAEA]">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-16">Simple, Developer-Friendly.</h2>
-          <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-             <div className="document-card rounded-xl p-12 text-left border-2 border-primary/20">
-                <h3 className="text-2xl font-bold mb-2">Open Source</h3>
-                <p className="text-muted mb-8 italic">Self-host forever.</p>
-                <div className="text-5xl font-display font-bold mb-8">$0</div>
-                <ul className="space-y-4 text-sm mb-12">
-                   <li className="flex items-center gap-2"><CheckCircle size={16} className="text-primary" /> Core Engine \u0026 SDK</li>
-                   <li className="flex items-center gap-2"><CheckCircle size={16} className="text-primary" /> CLI Terminal Tool</li>
-                   <li className="flex items-center gap-2"><CheckCircle size={16} className="text-primary" /> Standard Converters</li>
-                   <li className="flex items-center gap-2"><CheckCircle size={16} className="text-primary" /> Community Support</li>
-                </ul>
-                <Link href="https://github.com/Emerald-dev0/ConvertKit" className="block text-center border border-foreground py-3 rounded-lg font-bold hover:bg-foreground hover:text-white transition-all">
-                  Fork on GitHub
-                </Link>
-             </div>
-             <div className="document-card rounded-xl p-12 text-left bg-foreground text-white">
-                <div className="flex justify-between items-center mb-2">
-                   <h3 className="text-2xl font-bold">Pro Platform</h3>
-                   <span className="bg-primary text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-tighter">Coming Soon</span>
+      {/* Features Section */}
+      <section className="py-16 bg-surface border-y border-rule">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((feature) => (
+              <div key={feature.title} className="text-center">
+                <div className="w-12 h-12 rounded-full bg-accent-50 flex items-center justify-center mx-auto mb-4">
+                  <feature.icon className="w-6 h-6 text-accent-600" />
                 </div>
-                <p className="text-gray-400 mb-8 italic">Zero infra management.</p>
-                <div className="text-5xl font-display font-bold mb-8">$19<span className="text-lg font-normal text-gray-500">/mo</span></div>
-                <ul className="space-y-4 text-sm mb-12">
-                   <li className="flex items-center gap-2"><CheckCircle size={16} className="text-primary" /> Managed Infrastructure</li>
-                   <li className="flex items-center gap-2"><CheckCircle size={16} className="text-primary" /> Advanced AI Extraction</li>
-                   <li className="flex items-center gap-2"><CheckCircle size={16} className="text-primary" /> High-Scale Batch Processing</li>
-                   <li className="flex items-center gap-2"><CheckCircle size={16} className="text-primary" /> Team API Keys</li>
-                </ul>
-                <button className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20">
-                  Join Waitlist
-                </button>
-             </div>
+                <h3 className="text-lg font-semibold text-ink">{feature.title}</h3>
+                <p className="mt-2 text-sm text-ink-muted">{feature.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Professional Footer */}
-      <footer className="bg-foreground text-[#F7F6F3] py-24 px-6 border-t border-[#333333]">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 mb-20">
-          <div className="col-span-2 md:col-span-1">
-             <div className="flex items-center gap-2 font-display text-2xl font-bold mb-6">
-                <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-white font-mono text-lg text-white">C</div>
-                ConvertKit
-             </div>
-             <p className="text-gray-400 text-sm leading-relaxed">
-               Providing reliable, high-performance file conversion infrastructure
-               for developers around the world.
-             </p>
+      {/* Format Categories */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-display font-semibold text-ink">
+              Supports all major formats
+            </h2>
+            <p className="mt-4 text-lg text-ink-muted">
+              Documents, images, video, audio, and data — all in one place.
+            </p>
           </div>
-          <div>
-            <h4 className="font-bold mb-6 text-sm uppercase tracking-widest text-primary">Engine</h4>
-            <div className="flex flex-col gap-4 text-sm text-gray-400">
-               <Link href="/convert/pdf-to-txt" className="hover:text-white transition-colors">PDF Extraction</Link>
-               <Link href="/convert/png-to-jpg" className="hover:text-white transition-colors">Image Processing</Link>
-               <Link href="/convert/mp3-to-mp4" className="hover:text-white transition-colors">Multimedia</Link>
-               <Link href="/convert/csv-to-json" className="hover:text-white transition-colors">Data Transformation</Link>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {formatCategories.map((category) => (
+              <Card key={category.name} className="hover:shadow-medium transition-shadow">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-canvas-warm flex items-center justify-center flex-shrink-0">
+                    <category.icon className="w-5 h-5 text-ink-muted" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-ink">{category.name}</h3>
+                    <p className="text-sm text-ink-muted mt-1">
+                      {category.description}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {category.formats.map((format) => (
+                        <Badge key={format} variant="default">
+                          {format}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Open Source Section */}
+      <section className="py-16 md:py-24 bg-surface border-y border-rule">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge variant="default" className="mb-4">
+                Open Source
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-display font-semibold text-ink">
+                Built in the open
+              </h2>
+              <p className="mt-4 text-lg text-ink-muted">
+                ConvertKit is open source. Inspect the code, contribute, or self-host.
+                No black boxes, no vendor lock-in.
+              </p>
+              <div className="flex items-center gap-4 mt-8">
+                <Link href="https://github.com/your-org/convertkit" target="_blank">
+                  <Button variant="secondary">
+                    <Github className="w-4 h-4" />
+                    View on GitHub
+                  </Button>
+                </Link>
+                <Link href="/developers">
+                  <Button variant="ghost">
+                    Read the docs
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
             </div>
-          </div>
-          <div>
-            <h4 className="font-bold mb-6 text-sm uppercase tracking-widest text-primary">Resources</h4>
-            <div className="flex flex-col gap-4 text-sm text-gray-400">
-               <Link href="#" className="hover:text-white transition-colors">Documentation</Link>
-               <Link href="#" className="hover:text-white transition-colors">CLI Reference</Link>
-               <Link href="#" className="hover:text-white transition-colors">API Keys</Link>
-               <Link href="https://github.com/Emerald-dev0/ConvertKit" className="hover:text-white transition-colors">Source Code</Link>
-            </div>
-          </div>
-          <div>
-            <h4 className="font-bold mb-6 text-sm uppercase tracking-widest text-primary">Company</h4>
-            <div className="flex flex-col gap-4 text-sm text-gray-400">
-               <Link href="#" className="hover:text-white transition-colors">About Us</Link>
-               <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-               <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
-               <span className="text-xs mt-4 text-gray-600">Built by @Emerald-dev0</span>
+
+            <div className="bg-canvas-warm rounded-2xl p-8 border border-rule">
+              <div className="font-mono text-sm space-y-2">
+                <p className="text-ink-faint"># Install the CLI</p>
+                <p className="text-ink">npm install -g convertkit</p>
+                <p className="text-ink-faint mt-4"># Convert a file</p>
+                <p className="text-ink">convertkit convert input.pdf --to docx</p>
+                <p className="text-ink-faint mt-4"># Or use the API</p>
+                <p className="text-ink">curl -X POST /api/convert \</p>
+                <p className="text-ink pl-4">-F &quot;file=@input.pdf&quot; \</p>
+                <p className="text-ink pl-4">-F &quot;targetFormat=docx&quot;</p>
+              </div>
             </div>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto border-t border-[#333333] pt-8 flex justify-between items-center text-[10px] font-mono uppercase tracking-[0.2em] text-gray-600">
-           <div>\u00a9 2026 ConvertKit Universal Engine.</div>
-           <div>v0.1.0-STABLE</div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-display font-semibold text-ink">
+            Ready to convert?
+          </h2>
+          <p className="mt-4 text-lg text-ink-muted max-w-xl mx-auto">
+            Start converting files for free. No signup required.
+          </p>
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <Link href="/convert">
+              <Button size="lg">
+                Convert a file
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+            <Link href="/developers">
+              <Button variant="secondary" size="lg">
+                Explore the API
+              </Button>
+            </Link>
+          </div>
         </div>
-      </footer>
-    </div>
-  );
-}
+      </section>
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
-  return (
-    <div className="document-card rounded-xl p-10 flex flex-col gap-6">
-      <div className="p-3 bg-[#F7F6F3] rounded-lg w-fit">
-        {icon}
-      </div>
-      <h3 className="text-xl font-bold">{title}</h3>
-      <p className="text-muted text-sm leading-relaxed">{description}</p>
-    </div>
-  );
-}
-
-function CheckCircle({ size, className }: { size: number, className?: string }) {
-  return (
-    <div className={`w-${size} h-${size} bg-primary/10 rounded-full flex items-center justify-center ${className}`}>
-      <div className="w-1 h-1 bg-primary rounded-full" />
+      <Footer />
     </div>
   );
 }

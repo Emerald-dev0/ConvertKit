@@ -1,8 +1,13 @@
-import { ConversionHub } from "@/components/conversion-hub";
-import { ToolLink } from "@/components/tool-link";
-import { Nav } from "@/components/nav";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { Navigation } from "@/components/ui/navigation";
+import { Footer } from "@/components/ui/footer";
+import { ConversionCard } from "@/components/ui/conversion-card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { getFormatById } from "@/lib/convertkit";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -14,88 +19,176 @@ function parseSlug(slug: string) {
   return { from: parts[0], to: parts[1] };
 }
 
+const navItems = [
+  { label: "Convert", href: "/convert" },
+  { label: "Formats", href: "/formats" },
+  { label: "Developers", href: "/developers" },
+  { label: "Pricing", href: "/pricing" },
+];
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const parsed = parseSlug(slug);
-
-  if (!parsed) return { title: "ConvertKit | Universal Engine" };
+  if (!parsed) return { title: "ConvertKit — Turn Files Into What You Need" };
 
   const from = parsed.from.toUpperCase();
   const to = parsed.to.toUpperCase();
-
   return {
     title: `Convert ${from} to ${to} | ConvertKit`,
-    description: `High-fidelity ${from} to ${to} conversion powered by the ConvertKit Universal Engine. Open-source, local-first, and secure.`,
-    openGraph: {
-      title: `Free ${from} to ${to} Converter`,
-      description: `Fast and reliable ${from} to ${to} conversion using industrial-grade engines.`,
-    }
+    description: `Convert ${from} to ${to} online. Free, fast, and private. No signup required.`,
   };
 }
 
 export default async function ConversionPage({ params }: PageProps) {
   const { slug } = await params;
   const parsed = parseSlug(slug);
-
-  if (!parsed) {
-    notFound();
-  }
+  if (!parsed) notFound();
 
   const from = parsed.from.toUpperCase();
   const to = parsed.to.toUpperCase();
+  const fromFormat = getFormatById(parsed.from);
+  const toFormat = getFormatById(parsed.to);
+
+  // Mock formats for the converter - in production this would come from the registry
+  const formats = [
+    { id: parsed.to, label: toFormat?.name || to, extension: to },
+  ];
+
+  // Mock conversion handler
+  const handleConvert = async (file: File, targetFormat: string) => {
+    // In production this would call /api/convert
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    return {
+      success: true,
+      outputUrl: "#",
+      outputFilename: `${file.name.split(".")[0]}.${targetFormat}`,
+      outputSize: file.size,
+    };
+  };
 
   return (
-    <main className="min-h-screen bg-[#F7F6F3] flex flex-col items-center py-24 px-6 md:px-12">
-      <Nav />
-      <div className="pt-20 w-full flex flex-col items-center">
-        <ConversionHub
-          initialTargetFormat={parsed.to}
-          title={<>Convert <span className="text-primary">{from}</span> to <span className="text-primary">{to}</span></>}
-          description={`Professional ${from} to ${to} transformation powered by the ConvertKit infrastructure. Fast, deterministic, and high-fidelity.`}
-        />
-      </div>
+    <div className="min-h-screen bg-canvas">
+      <Navigation items={navItems} />
 
-      {/* SEO Content Section */}
-      <section className="mt-32 max-w-4xl w-full">
-         <h2 className="text-2xl font-bold mb-8 text-center">How to convert {from} to {to}</h2>
-         <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <div className="flex flex-col gap-4 text-center">
-               <div className="text-4xl font-display text-primary/20 font-black">01</div>
-               <h4 className="font-bold">Upload</h4>
-               <p className="text-muted text-sm leading-relaxed">Drag and drop your {from} file into the converter above.</p>
-            </div>
-            <div className="flex flex-col gap-4 text-center">
-               <div className="text-4xl font-display text-primary/20 font-black">02</div>
-               <h4 className="font-bold">Process</h4>
-               <p className="text-muted text-sm leading-relaxed">Our universal engine identifies the structure and prepares the transformation.</p>
-            </div>
-            <div className="flex flex-col gap-4 text-center">
-               <div className="text-4xl font-display text-primary/20 font-black">03</div>
-               <h4 className="font-bold">Download</h4>
-               <p className="text-muted text-sm leading-relaxed">Your high-fidelity {to} file is ready in seconds.</p>
-            </div>
-         </div>
+      <main className="py-12 md:py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Back link */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-ink-muted hover:text-ink transition-colors mb-8"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to ConvertKit
+          </Link>
 
-         <div className="flex flex-col gap-6">
-            <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-muted text-center mb-4">Related Tools</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-               <ToolLink from={parsed.from} to="pdf" />
-               <ToolLink from={parsed.from} to="txt" />
-               <ToolLink from="png" to={parsed.to} />
-               <ToolLink from="jpg" to={parsed.to} />
-            </div>
-         </div>
-      </section>
+          {/* Header */}
+          <div className="text-center mb-12">
+            <Badge variant="accent" className="mb-4">
+              {from} → {to}
+            </Badge>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-ink tracking-tight">
+              Convert{" "}
+              <span className="text-accent-600">{from}</span> to{" "}
+              <span className="text-accent-600">{to}</span>
+            </h1>
+            <p className="mt-4 text-lg text-ink-muted max-w-xl mx-auto">
+              {fromFormat && toFormat
+                ? `Transform ${fromFormat.name} files to ${toFormat.name}. Fast, private, and free.`
+                : `Convert ${from} files to ${to} format. Fast, private, and free.`}
+            </p>
+          </div>
 
-      {/* Technical Footer */}
-      <footer className="mt-32 max-w-4xl w-full border-t border-[#EAEAEA] pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-mono uppercase tracking-widest text-muted">
-        <div>@convertkit/core v0.1.0</div>
-        <div className="flex gap-8">
-          <a href="#" className="hover:text-primary transition-colors">GitHub</a>
-          <a href="#" className="hover:text-primary transition-colors">Documentation</a>
-          <a href="#" className="hover:text-primary transition-colors">NACOS OAU</a>
+          {/* Converter */}
+          <div className="max-w-2xl mx-auto">
+            <ConversionCard
+              formats={formats}
+              onConvert={handleConvert}
+            />
+          </div>
+
+          {/* How it works */}
+          <section className="mt-16 md:mt-24">
+            <h2 className="text-2xl font-display font-semibold text-ink text-center mb-8">
+              How it works
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                {
+                  step: "01",
+                  title: "Upload",
+                  description: `Select or drag your ${from} file into the converter.`,
+                },
+                {
+                  step: "02",
+                  title: "Convert",
+                  description: `We'll transform it to ${to} using the optimal conversion path.`,
+                },
+                {
+                  step: "03",
+                  title: "Download",
+                  description: `Get your ${to} file instantly. No signup required.`,
+                },
+              ].map((item) => (
+                <div key={item.step} className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-accent-50 flex items-center justify-center mx-auto mb-4">
+                    <span className="font-mono text-sm font-semibold text-accent-600">
+                      {item.step}
+                    </span>
+                  </div>
+                  <h3 className="font-semibold text-ink">{item.title}</h3>
+                  <p className="text-sm text-ink-muted mt-2">
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Related conversions */}
+          <section className="mt-16 md:mt-24">
+            <h2 className="text-2xl font-display font-semibold text-ink text-center mb-8">
+              Other conversions
+            </h2>
+            <div className="flex flex-wrap justify-center gap-3">
+              {[
+                ["pdf", "docx"],
+                ["png", "jpg"],
+                ["jpg", "webp"],
+                ["csv", "json"],
+                ["md", "html"],
+                ["mp4", "mp3"],
+              ]
+                .filter(
+                  ([from, to]) =>
+                    !(from === parsed.from && to === parsed.to)
+                )
+                .map(([from, to]) => (
+                  <Link
+                    key={`${from}-${to}`}
+                    href={`/convert/${from}-to-${to}`}
+                  >
+                    <Button variant="secondary" size="sm">
+                      {from.toUpperCase()} → {to.toUpperCase()}
+                    </Button>
+                  </Link>
+                ))}
+            </div>
+          </section>
+
+          {/* Privacy note */}
+          <section className="mt-16 md:mt-24 p-6 bg-surface border border-rule rounded-xl">
+            <div className="text-center">
+              <h3 className="font-semibold text-ink">Private by default</h3>
+              <p className="text-sm text-ink-muted mt-2 max-w-lg mx-auto">
+                Your files are processed locally and never uploaded to external servers.
+                Anonymous conversions are not stored. Create an account to save your conversion history.
+              </p>
+            </div>
+          </section>
         </div>
-      </footer>
-    </main>
+      </main>
+
+      <Footer />
+    </div>
   );
 }
