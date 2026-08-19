@@ -1,32 +1,28 @@
 import type { Metadata } from "next";
-import { Inter, Bricolage_Grotesque, Geist_Mono, Instrument_Serif } from "next/font/google";
-import { Auth0Provider } from '@auth0/nextjs-auth0';
+import { Newsreader, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Auth0Provider } from "@auth0/nextjs-auth0";
 import "./globals.css";
 
-const inter = Inter({
+const newsreader = Newsreader({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-newsreader",
+  style: ["normal", "italic"],
 });
 
-const bricolage = Bricolage_Grotesque({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-bricolage",
+  variable: "--font-dm-sans",
 });
 
-const geistMono = Geist_Mono({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-geist-mono",
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-serif",
+  variable: "--font-jetbrains-mono",
 });
 
 export const metadata: Metadata = {
-  title: "ConvertKit | Universal File Conversion Engine",
-  description: "High-performance, developer-first conversion infrastructure. Open-source, local-first, and secure.",
+  title: "ConvertKit — Turn Files Into What You Need",
+  description:
+    "Convert documents, images, video, audio and data between formats. Free, fast, and private. No signup required for basic conversions.",
 };
 
 export default function RootLayout({
@@ -35,10 +31,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-canvas">
       <Auth0Provider>
         <body
-          className={`${inter.variable} ${bricolage.variable} ${geistMono.variable} ${instrumentSerif.variable} font-sans antialiased bg-[#F7F6F3]`}
+          className={`${newsreader.variable} ${dmSans.variable} ${jetbrainsMono.variable} font-sans antialiased bg-canvas text-ink`}
         >
           {children}
         </body>
